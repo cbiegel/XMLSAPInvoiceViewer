@@ -28,6 +28,7 @@ public class XMLTreeUtil
      */
     public static Enumeration<TreePath> getTreeExpansionState(JTree tree)
     {
+        // test
         if (tree != null)
         {
             return tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot()));
