@@ -2,12 +2,10 @@ package xmlviewer.ui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.Enumeration;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.tree.TreePath;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.InputSource;
@@ -97,13 +95,14 @@ public class MainWindow {
      * @param pathName
      *            The path name of the XML file.
      */
-    public void initializeAndDisplayTree(InputSource is, String pathName, Enumeration<TreePath> expansionState)
+    public void initializeAndDisplayTree(InputSource is, String pathName, String expansionState)
             throws TransformerException, ParserConfigurationException, SAXException
     {
         // create the tree
         _tree = new JTree(new XMLTreeModel(is));
         _tree.setCellRenderer(new XMLTreeCellRenderer());
-        XMLTreeUtil.loadTreeExpansionState(_tree, expansionState);
+
+        XMLTreeUtil.loadTreeExpansionState(_tree, expansionState, 0);
 
         _frame.setTitle("XMLViewer -- " + pathName);
 

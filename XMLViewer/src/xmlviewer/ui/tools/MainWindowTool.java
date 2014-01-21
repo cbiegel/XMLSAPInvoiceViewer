@@ -8,12 +8,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Enumeration;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JTree;
-import javax.swing.tree.TreePath;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.InputSource;
@@ -40,13 +38,16 @@ public class MainWindowTool {
 
     private boolean _saveWindowPosition;
 
-    private Enumeration<TreePath> _treeExpansionState;
+    private String _currentFilePath;
+
+    private String _treeExpansionState;
 
     public MainWindowTool()
     {
+        _currentFilePath = "";
+
         loadWindowLocationProperties();
         loadSettings();
-        loadTreeExpansionState();
 
         _ui = new MainWindow(_x_pos, _y_pos, _width, _height, _saveWindowPosition);
 
@@ -81,15 +82,16 @@ public class MainWindowTool {
             public void actionPerformed(ActionEvent event) {
                 XMLViewerFileChooser filechooser = new XMLViewerFileChooser();
 
-                String chosenFilePath = filechooser.getLastFilePath();
+                _currentFilePath = filechooser.getLastFilePath();
+                loadTreeExpansionState();
 
                 try
                 {
-                    if (!chosenFilePath.equals("") && filechooser.hasPathChanged())
+                    if (!_currentFilePath.equals("") && filechooser.hasPathChanged())
                     {
-                        InputStream ist = new FileInputStream(new File(chosenFilePath));
+                        InputStream ist = new FileInputStream(new File(_currentFilePath));
                         InputSource is = new InputSource(ist);
-                        String fileName = getFileNameFromPathName(chosenFilePath);
+                        String fileName = getFileNameFromPathName(_currentFilePath);
                         _ui.initializeAndDisplayTree(is, fileName, _treeExpansionState);
                     }
 
@@ -132,10 +134,18 @@ public class MainWindowTool {
                 }
 
                 JTree tree = _ui.getTree();
-                Enumeration<TreePath> expState = XMLTreeUtil.getTreeExpansionState(tree);
-                XMLTreeExpansionState expansionState = new XMLTreeExpansionState(expState);
 
-                XMLTreeUtil.serializeTreeExpansionState(expansionState);
+                if (tree == null)
+                {
+                    return;
+                }
+
+                String expState = XMLTreeUtil.getTreeExpansionState(tree, 0);
+
+                XMLTreeExpansionState expansionState = new XMLTreeExpansionState(expState);
+                int fileNameHash = _currentFilePath.hashCode();
+
+                XMLTreeUtil.serializeTreeExpansionState(expansionState, fileNameHash);
             }
         });
     }
@@ -213,11 +223,17 @@ public class MainWindowTool {
 
     private void loadTreeExpansionState()
     {
-        XMLTreeExpansionState expState = XMLTreeUtil.deserializeTreeExpansionState();
+        int fileNameHash = _currentFilePath.hashCode();
+
+        XMLTreeExpansionState expState = XMLTreeUtil.deserializeTreeExpansionState(fileNameHash);
 
         if (expState != null)
         {
             _treeExpansionState = expState.getExpansionState();
+        }
+        else
+        {
+            _treeExpansionState = XMLTreeUtil.getAllCollapsedExpansionState();
         }
     }
 

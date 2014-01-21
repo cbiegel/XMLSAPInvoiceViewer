@@ -44,7 +44,6 @@ public class DOMUtil {
         transformer.setOutputProperty(OutputKeys.INDENT, "no");
         DOMResult result = new DOMResult();
         transformer.transform(new SAXSource(reader, input), result);
-        System.out.println(result.getNode().getFirstChild().getFirstChild().getFirstChild().getNodeName());
         return (Document) result.getNode();
     }
 
