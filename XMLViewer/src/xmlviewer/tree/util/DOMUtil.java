@@ -1,4 +1,4 @@
-package xmlviewer.tree.utils;
+package xmlviewer.tree.util;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;

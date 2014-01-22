@@ -1,4 +1,4 @@
-package xmlviewer.tree.utils;
+package xmlviewer.tree.util;
 
 import java.io.File;
 import java.io.FileInputStream;

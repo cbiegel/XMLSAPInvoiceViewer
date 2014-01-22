@@ -17,7 +17,7 @@ import javax.xml.transform.TransformerException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import xmlviewer.tree.XMLTreeExpansionState;
-import xmlviewer.tree.utils.XMLTreeUtil;
+import xmlviewer.tree.util.XMLTreeUtil;
 import xmlviewer.ui.MainWindow;
 import xmlviewer.ui.XMLViewerFileChooser;
 

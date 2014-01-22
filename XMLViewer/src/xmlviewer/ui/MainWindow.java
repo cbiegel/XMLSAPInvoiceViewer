@@ -12,7 +12,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import xmlviewer.tree.XMLTreeCellRenderer;
 import xmlviewer.tree.XMLTreeModel;
-import xmlviewer.tree.utils.XMLTreeUtil;
+import xmlviewer.tree.util.XMLTreeUtil;
 
 
 /**
