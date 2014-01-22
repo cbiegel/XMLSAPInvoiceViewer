@@ -21,8 +21,9 @@ public class XMLViewerMenu {
     private JMenu _settings;
     private JMenuItem _open;
     private JCheckBoxMenuItem _saveWindowLocation;
+    private JCheckBoxMenuItem _saveTreeState;
 
-    public XMLViewerMenu(boolean saveWindowPos) {
+    public XMLViewerMenu(boolean saveWindowPos, boolean saveTreeState) {
         _menuBar = new JMenuBar();
         _file = new JMenu(" File ");
         _file.setName("file");
@@ -37,6 +38,10 @@ public class XMLViewerMenu {
         _saveWindowLocation.setName("saveWindowLocation");
         _saveWindowLocation.setSelected(saveWindowPos);
 
+        _saveTreeState = new JCheckBoxMenuItem("Save tree state");
+        _saveTreeState.setName("saveTreeState");
+        _saveTreeState.setSelected(saveTreeState);
+
         setupMenuBar();
     }
 
@@ -46,14 +51,18 @@ public class XMLViewerMenu {
 
         _open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
         _saveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+        _saveTreeState.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
 
         _file.add(_open);
 
+        _settings.add(_saveTreeState);
         _settings.add(_saveWindowLocation);
 
         _menuBar.add(_file);
         _menuBar.add(_settings);
     }
+
+    // getters
 
     public JMenuBar getMenuBar()
     {
@@ -78,6 +87,11 @@ public class XMLViewerMenu {
     public JCheckBoxMenuItem getSaveWindowLocationItem()
     {
         return _saveWindowLocation;
+    }
+
+    public JCheckBoxMenuItem getSaveTreeStateItem()
+    {
+        return _saveTreeState;
     }
 
 }

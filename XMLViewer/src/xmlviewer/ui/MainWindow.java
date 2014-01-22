@@ -35,13 +35,13 @@ public class MainWindow {
 
     private static final int DEFAULT_HEIGHT = 500;
 
-    public MainWindow(int x, int y, int width, int height, boolean saveWindowPos)
+    public MainWindow(int x, int y, int width, int height, boolean saveWindowPos, boolean saveTreeState)
     {
         _tree = null;
 
         _frame = new JFrame("XML Viewer");
 
-        _viewerMenu = new XMLViewerMenu(saveWindowPos);
+        _viewerMenu = new XMLViewerMenu(saveWindowPos, saveTreeState);
 
         _menuBar = _viewerMenu.getMenuBar();
 

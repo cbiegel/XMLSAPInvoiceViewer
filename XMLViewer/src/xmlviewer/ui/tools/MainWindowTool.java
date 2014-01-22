@@ -37,6 +37,7 @@ public class MainWindowTool {
     private int _height;
 
     private boolean _saveWindowPosition;
+    private boolean _saveTreeState;
 
     private String _currentFilePath;
 
@@ -49,7 +50,7 @@ public class MainWindowTool {
         loadWindowLocationProperties();
         loadSettings();
 
-        _ui = new MainWindow(_x_pos, _y_pos, _width, _height, _saveWindowPosition);
+        _ui = new MainWindow(_x_pos, _y_pos, _width, _height, _saveWindowPosition, _saveTreeState);
 
         setupListeners();
     }
@@ -62,10 +63,12 @@ public class MainWindowTool {
         JMenuItem openItem = _ui.getViewerMenu().getOpenItem();
         JFrame frame = _ui.getFrame();
         JCheckBoxMenuItem saveWindowLocationCheck = _ui.getViewerMenu().getSaveWindowLocationItem();
+        JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSaveTreeStateItem();
 
         addOpenItemListener(openItem);
         addWindowListener(frame);
         addWindowLocationCheckListener(saveWindowLocationCheck);
+        addSaveTreeStateListener(saveTreeState);
     }
 
     /**
@@ -83,7 +86,11 @@ public class MainWindowTool {
                 XMLViewerFileChooser filechooser = new XMLViewerFileChooser();
 
                 _currentFilePath = filechooser.getLastFilePath();
-                loadTreeExpansionState();
+
+                if (_saveTreeState)
+                {
+                    loadTreeExpansionState();
+                }
 
                 try
                 {
@@ -125,14 +132,27 @@ public class MainWindowTool {
                 // save the current location of the window so it restores this state on the next start of the program
                 if (_saveWindowPosition)
                 {
-                    int x = _ui.getFrame().getX();
-                    int y = _ui.getFrame().getY();
-                    int width = _ui.getFrame().getWidth();
-                    int height = _ui.getFrame().getHeight();
-
-                    saveWindowLocationProperties(x, y, width, height);
+                    saveWindowPosition();
                 }
 
+                if (_saveTreeState)
+                {
+                    saveTreeState();
+                }
+            }
+
+            private void saveWindowPosition()
+            {
+                int x = _ui.getFrame().getX();
+                int y = _ui.getFrame().getY();
+                int width = _ui.getFrame().getWidth();
+                int height = _ui.getFrame().getHeight();
+
+                saveWindowLocationProperties(x, y, width, height);
+            }
+
+            private void saveTreeState()
+            {
                 JTree tree = _ui.getTree();
 
                 if (tree == null)
@@ -165,8 +185,22 @@ public class MainWindowTool {
             public void actionPerformed(ActionEvent event)
             {
                 _saveWindowPosition = checkBox.isSelected();
-                saveSettings(_saveWindowPosition);
+                saveSetting(1);
             }
+        });
+    }
+
+    private void addSaveTreeStateListener(final JCheckBoxMenuItem checkBox)
+    {
+        checkBox.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                _saveTreeState = checkBox.isSelected();
+                saveSetting(0);
+            }
+
         });
     }
 
@@ -207,18 +241,29 @@ public class MainWindowTool {
      */
     private void loadSettings()
     {
+        _saveTreeState = UserPreferences.loadSaveTreeStateProperty();
         _saveWindowPosition = UserPreferences.loadSaveWindowPositionProperty();
     }
 
     /**
-     * Saves all settings
+     * Saves the given setting.
      * 
-     * @param saveWindowPos
-     *            Determines whether or not the position and size of the window will be saved.
+     * @param settingCode
+     *            The setting to be saved as an integer representation: 0 = saveTreeState, 1 = saveWindowPosition
      */
-    private void saveSettings(boolean saveWindowPos)
+    private void saveSetting(int settingCode)
     {
-        UserPreferences.saveSaveWindowPositionProperty(saveWindowPos);
+        switch (settingCode)
+        {
+        case 0:
+            UserPreferences.saveSaveTreeStateProperty(_saveTreeState);
+            return;
+        case 1:
+            UserPreferences.saveSaveWindowPositionProperty(_saveWindowPosition);
+            return;
+        default:
+            return;
+        }
     }
 
     private void loadTreeExpansionState()

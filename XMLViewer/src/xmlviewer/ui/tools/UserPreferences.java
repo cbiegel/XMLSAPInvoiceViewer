@@ -11,6 +11,7 @@ public class UserPreferences
     private static final String KEY_FRAME_YPOS = "FRAME_YPOS";
     private static final String KEY_FRAME_WIDTH = "FRAME_WIDTH";
     private static final String KEY_FRAME_HEIGHT = "FRAME_HEIGHT";
+    private static final String KEY_SAVE_TREE_STATE = "SAVE_TREE_STATE";
     private static final String KEY_SAVE_WINDOW_POS = "SAVE_WINDOW_POS";
 
     // loading properties
@@ -33,6 +34,11 @@ public class UserPreferences
     public static int loadWindowHeight()
     {
         return _prefs.getInt(KEY_FRAME_HEIGHT, 0);
+    }
+
+    public static boolean loadSaveTreeStateProperty()
+    {
+        return _prefs.getBoolean(KEY_SAVE_TREE_STATE, true);
     }
 
     public static boolean loadSaveWindowPositionProperty()
@@ -60,6 +66,11 @@ public class UserPreferences
     public static void saveWindowHeight(int value)
     {
         _prefs.putInt(KEY_FRAME_HEIGHT, value);
+    }
+
+    public static void saveSaveTreeStateProperty(boolean value)
+    {
+        _prefs.putBoolean(KEY_SAVE_TREE_STATE, value);
     }
 
     public static void saveSaveWindowPositionProperty(boolean value)
