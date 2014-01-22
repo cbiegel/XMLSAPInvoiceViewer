@@ -16,12 +16,15 @@ import javax.swing.KeyStroke;
  */
 public class XMLViewerMenu {
 
-    private JMenuBar _menuBar;
-    private JMenu _file;
-    private JMenu _settings;
-    private JMenuItem _open;
-    private JCheckBoxMenuItem _saveWindowLocation;
-    private JCheckBoxMenuItem _saveTreeState;
+    private final JMenuBar _menuBar;
+    private final JMenu _file;
+    private final JMenu _settings;
+    private final JMenu _view;
+    private final JMenuItem _open;
+    private final JCheckBoxMenuItem _settingsSaveWindowLocation;
+    private final JCheckBoxMenuItem _settingsSaveTreeState;
+    private final JMenuItem _viewCollapseAll;
+    private final JMenuItem _viewExpandAll;
 
     public XMLViewerMenu(boolean saveWindowPos, boolean saveTreeState) {
         _menuBar = new JMenuBar();
@@ -31,16 +34,28 @@ public class XMLViewerMenu {
         _settings = new JMenu(" Settings ");
         _settings.setName("settings");
 
+        _view = new JMenu(" View ");
+        _view.setName("view");
+
         _open = new JMenuItem("Open...");
         _open.setName("open");
 
-        _saveWindowLocation = new JCheckBoxMenuItem("Save window location on close");
-        _saveWindowLocation.setName("saveWindowLocation");
-        _saveWindowLocation.setSelected(saveWindowPos);
+        _settingsSaveWindowLocation = new JCheckBoxMenuItem("Save window location on close");
+        _settingsSaveWindowLocation.setName("saveWindowLocation");
+        _settingsSaveWindowLocation.setSelected(saveWindowPos);
 
-        _saveTreeState = new JCheckBoxMenuItem("Save tree state");
-        _saveTreeState.setName("saveTreeState");
-        _saveTreeState.setSelected(saveTreeState);
+        _settingsSaveTreeState = new JCheckBoxMenuItem("Save tree state");
+        _settingsSaveTreeState.setName("saveTreeState");
+        _settingsSaveTreeState.setSelected(saveTreeState);
+        _settingsSaveTreeState.setEnabled(false);
+
+        _viewCollapseAll = new JMenuItem("Collapse all nodes");
+        _viewCollapseAll.setName("collapseAll");
+        _viewCollapseAll.setEnabled(false);
+
+        _viewExpandAll = new JMenuItem("Expand all nodes");
+        _viewExpandAll.setName("expandAll");
+        _viewExpandAll.setEnabled(false);
 
         setupMenuBar();
     }
@@ -50,15 +65,21 @@ public class XMLViewerMenu {
         _file.setMnemonic(KeyEvent.VK_F);
 
         _open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
-        _saveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
-        _saveTreeState.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
+        _settingsSaveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+        _settingsSaveTreeState.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
+        _viewCollapseAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
+        _viewExpandAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
 
         _file.add(_open);
 
-        _settings.add(_saveTreeState);
-        _settings.add(_saveWindowLocation);
+        _settings.add(_settingsSaveTreeState);
+        _settings.add(_settingsSaveWindowLocation);
+
+        _view.add(_viewCollapseAll);
+        _view.add(_viewExpandAll);
 
         _menuBar.add(_file);
+        _menuBar.add(_view);
         _menuBar.add(_settings);
     }
 
@@ -79,19 +100,34 @@ public class XMLViewerMenu {
         return _settings;
     }
 
+    public JMenu getViewMenu()
+    {
+        return _view;
+    }
+
     public JMenuItem getOpenItem()
     {
         return _open;
     }
 
-    public JCheckBoxMenuItem getSaveWindowLocationItem()
+    public JCheckBoxMenuItem getSettingsSaveWindowLocationItem()
     {
-        return _saveWindowLocation;
+        return _settingsSaveWindowLocation;
     }
 
-    public JCheckBoxMenuItem getSaveTreeStateItem()
+    public JCheckBoxMenuItem getSettingsSaveTreeStateItem()
     {
-        return _saveTreeState;
+        return _settingsSaveTreeState;
+    }
+
+    public JMenuItem getViewCollapseAllItem()
+    {
+        return _viewCollapseAll;
+    }
+
+    public JMenuItem getViewExpandAllItem()
+    {
+        return _viewExpandAll;
     }
 
 }

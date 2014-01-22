@@ -110,6 +110,12 @@ public class MainWindow {
         _framePanel.setViewportView(_tree);
     }
 
+    public void updateTreeExpansionState(String expansionState)
+    {
+        System.out.println("updateTreeExpansionState:\t" + expansionState);
+        XMLTreeUtil.loadTreeExpansionState(_tree, expansionState, 0);
+    }
+
     /**
      * @return The JFrame component of this window.
      */

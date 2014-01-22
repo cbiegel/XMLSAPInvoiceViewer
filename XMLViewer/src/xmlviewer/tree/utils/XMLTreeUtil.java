@@ -91,22 +91,26 @@ public class XMLTreeUtil
         }
     }
 
-    public static String getAllCollapsedExpansionState()
+    public static void expandAllNodes(JTree tree)
     {
-        return ",0";
+        int row = 0;
+
+        while (row < tree.getRowCount())
+        {
+            tree.expandRow(row);
+            ++row;
+        }
     }
 
-    public static String getAllExpandedExpansionState(JTree tree)
+    public static void collapseAllNodes(JTree tree)
     {
-        StringBuffer result = new StringBuffer();
-        int rowCount = tree.getRowCount();
+        int row = tree.getRowCount() - 1;
 
-        for (int c = 0; c < rowCount; c++)
+        while (row > 0)
         {
-            result.append("," + c);
+            tree.collapseRow(row);
+            --row;
         }
-
-        return result.toString();
     }
 
     public static void serializeTreeExpansionState(XMLTreeExpansionState expansionState, int hash)

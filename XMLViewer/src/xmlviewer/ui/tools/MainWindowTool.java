@@ -62,13 +62,17 @@ public class MainWindowTool {
     {
         JMenuItem openItem = _ui.getViewerMenu().getOpenItem();
         JFrame frame = _ui.getFrame();
-        JCheckBoxMenuItem saveWindowLocationCheck = _ui.getViewerMenu().getSaveWindowLocationItem();
-        JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSaveTreeStateItem();
+        JCheckBoxMenuItem saveWindowLocationCheck = _ui.getViewerMenu().getSettingsSaveWindowLocationItem();
+        JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSettingsSaveTreeStateItem();
+        JMenuItem collapseAll = _ui.getViewerMenu().getViewCollapseAllItem();
+        JMenuItem expandAll = _ui.getViewerMenu().getViewExpandAllItem();
 
         addOpenItemListener(openItem);
         addWindowListener(frame);
         addWindowLocationCheckListener(saveWindowLocationCheck);
         addSaveTreeStateListener(saveTreeState);
+        addCollapseAllListener(collapseAll);
+        addExpandAllListener(expandAll);
     }
 
     /**
@@ -94,12 +98,26 @@ public class MainWindowTool {
 
                 try
                 {
+                    // a file has been opened in the FileChooser
                     if (!_currentFilePath.equals("") && filechooser.hasPathChanged())
                     {
                         InputStream ist = new FileInputStream(new File(_currentFilePath));
                         InputSource is = new InputSource(ist);
                         String fileName = getFileNameFromPathName(_currentFilePath);
                         _ui.initializeAndDisplayTree(is, fileName, _treeExpansionState);
+
+                        // enable the menu components
+                        JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSettingsSaveTreeStateItem();
+                        JMenuItem collapseAll = _ui.getViewerMenu().getViewCollapseAllItem();
+                        JMenuItem expandAll = _ui.getViewerMenu().getViewExpandAllItem();
+
+                        if (!saveTreeState.isEnabled())
+                            saveTreeState.setEnabled(true);
+                        if (!collapseAll.isEnabled())
+                            collapseAll.setEnabled(true);
+                        if (!expandAll.isEnabled())
+                            expandAll.setEnabled(true);
+
                     }
 
                 } catch (FileNotFoundException e) {
@@ -204,6 +222,30 @@ public class MainWindowTool {
         });
     }
 
+    private void addCollapseAllListener(JMenuItem collapseItem)
+    {
+        collapseItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                XMLTreeUtil.collapseAllNodes(_ui.getTree());
+            }
+        });
+    }
+
+    private void addExpandAllListener(JMenuItem expandItem)
+    {
+        expandItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                XMLTreeUtil.expandAllNodes(_ui.getTree());
+            }
+        });
+    }
+
     /**
      * Saves the current window position and size.
      * 
@@ -278,7 +320,8 @@ public class MainWindowTool {
         }
         else
         {
-            _treeExpansionState = XMLTreeUtil.getAllCollapsedExpansionState();
+            // initial expansion state. All nodes are collapsed (except for the root node which is represented by 0)
+            _treeExpansionState = ",0";
         }
     }
 
