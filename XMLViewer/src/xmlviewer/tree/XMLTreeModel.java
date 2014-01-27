@@ -114,7 +114,10 @@ public class XMLTreeModel implements TreeModel {
                 }
             }
         }
-        // this should never happen
+        /*
+         * This only happens if parent == child or the given nodes are invalid. This case should never occur in the live
+         * system.
+         */
         return -1;
     }
 
@@ -125,14 +128,17 @@ public class XMLTreeModel implements TreeModel {
 
     // These implementations are not needed (yet)
     @Override
-    public void valueForPathChanged(TreePath arg0, Object arg1) {
+    public void valueForPathChanged(TreePath arg0, Object arg1)
+    {
     }
 
     @Override
-    public void addTreeModelListener(TreeModelListener arg0) {
+    public void addTreeModelListener(TreeModelListener arg0)
+    {
     }
 
     @Override
-    public void removeTreeModelListener(TreeModelListener arg0) {
+    public void removeTreeModelListener(TreeModelListener arg0)
+    {
     }
 }

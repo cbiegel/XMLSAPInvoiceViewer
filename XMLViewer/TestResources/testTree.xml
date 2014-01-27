@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<root>
+	<note from="Foo" to="Bar">
+		<title>Reminder</title>
+		<message>Don't forget me this weekend</message>
+	</note> 
+	<note from="Bob" to="Alice" id="1">
+		<title>Secret</title>
+		<message>Hello World</message>
+	</note>
+</root>

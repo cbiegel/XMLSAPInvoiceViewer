@@ -22,8 +22,6 @@ public class XMLTreeUtil
     private static final String TREE_EXPANSION_FILE_SUFFIX = ".exp";
 
     /**
-     * @param path1
-     * @param path2
      * @return true, if path1 is a descendant of path2. Else, returns false.
      */
     public static boolean isDescendant(TreePath path1, TreePath path2) {
@@ -39,7 +37,8 @@ public class XMLTreeUtil
     }
 
     /**
-     * Saves the current expansion state of a JTree and returns it in an Enumeration for storing purposes.
+     * Saves the current expansion state of a JTree and returns it in an Enumeration for storing purposes. Example: A
+     * JTree that has all its branches collapsed will return a TreeExpansionState of ",0".
      * 
      * @param tree
      *            Save the current expansion state of this tree
