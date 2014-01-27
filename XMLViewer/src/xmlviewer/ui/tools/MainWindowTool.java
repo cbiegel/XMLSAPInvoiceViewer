@@ -336,4 +336,12 @@ public class MainWindowTool {
         return pathName.substring(indexOfLastSlash + 1);
     }
 
+    /**
+     * Closes the window and disposes all of its UI components.
+     */
+    public void closeWindow()
+    {
+        _ui.getFrame().dispose();
+    }
+
 }
