@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
@@ -121,5 +122,19 @@ public class XMLTreeUtilTest {
 
         // delete the file
         output.delete();
+    }
+
+    @Test
+    public void testIsTsSapInvoiceListxternal()
+            throws FileNotFoundException, TransformerException, ParserConfigurationException, SAXException
+    {
+        assertFalse(XMLTreeUtil.isTsSapInvoiceListExternal(_testTree));
+
+        InputStream ist = new FileInputStream(new File(".\\TestResources\\xmlExport.xml"));
+        _testInputSource = new InputSource(ist);
+        _testModel = new XMLTreeModel(_testInputSource);
+        _testTree = new JTree(_testModel);
+
+        assertTrue(XMLTreeUtil.isTsSapInvoiceListExternal(_testTree));
     }
 }
