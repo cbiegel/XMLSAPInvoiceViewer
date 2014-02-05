@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><com.scandlines.coast.common.payment.TsSapInvoiceListExternal xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <mAllowedOperations>0</mAllowedOperations>
+  <mSapPaymentExportSequenceNumber>555555</mSapPaymentExportSequenceNumber>
+  <mTotalNumberOfCashBooks>1</mTotalNumberOfCashBooks>
+  <tsSapInvoiceExternals/>
+</com.scandlines.coast.common.payment.TsSapInvoiceListExternal>

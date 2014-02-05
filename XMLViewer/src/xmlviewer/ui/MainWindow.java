@@ -110,6 +110,11 @@ public class MainWindow {
         _framePanel.setViewportView(_tree);
     }
 
+    public void initializeAndDisplayDetailedView(DetailedView detail)
+    {
+        _framePanel.setViewportView(detail);
+    }
+
     public void updateTreeExpansionState(String expansionState)
     {
         System.out.println("updateTreeExpansionState:\t" + expansionState);

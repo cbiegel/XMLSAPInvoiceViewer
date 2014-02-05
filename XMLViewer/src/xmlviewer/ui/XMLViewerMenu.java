@@ -23,6 +23,7 @@ public class XMLViewerMenu {
     private final JMenuItem _open;
     private final JCheckBoxMenuItem _settingsSaveWindowLocation;
     private final JCheckBoxMenuItem _settingsSaveTreeState;
+    private final JMenuItem _viewSwitchViews;
     private final JMenuItem _viewCollapseAll;
     private final JMenuItem _viewExpandAll;
 
@@ -49,6 +50,10 @@ public class XMLViewerMenu {
         _settingsSaveTreeState.setSelected(saveTreeState);
         _settingsSaveTreeState.setEnabled(false);
 
+        _viewSwitchViews = new JMenuItem("Switch to detailed view");
+        _viewSwitchViews.setName("switchViews");
+        _viewSwitchViews.setEnabled(false);
+
         _viewCollapseAll = new JMenuItem("Collapse all nodes");
         _viewCollapseAll.setName("collapseAll");
         _viewCollapseAll.setEnabled(false);
@@ -65,8 +70,9 @@ public class XMLViewerMenu {
         _file.setMnemonic(KeyEvent.VK_F);
 
         _open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
-        _settingsSaveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
+        _settingsSaveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.ALT_MASK));
         _settingsSaveTreeState.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
+        _viewSwitchViews.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
         _viewCollapseAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
         _viewExpandAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
 
@@ -75,6 +81,7 @@ public class XMLViewerMenu {
         _settings.add(_settingsSaveTreeState);
         _settings.add(_settingsSaveWindowLocation);
 
+        _view.add(_viewSwitchViews);
         _view.add(_viewCollapseAll);
         _view.add(_viewExpandAll);
 
@@ -118,6 +125,11 @@ public class XMLViewerMenu {
     public JCheckBoxMenuItem getSettingsSaveTreeStateItem()
     {
         return _settingsSaveTreeState;
+    }
+
+    public JMenuItem getViewSwitchViewsItem()
+    {
+        return _viewSwitchViews;
     }
 
     public JMenuItem getViewCollapseAllItem()

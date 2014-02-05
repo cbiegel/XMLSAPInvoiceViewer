@@ -36,6 +36,13 @@ public class MainWindowTool {
     private int _width;
     private int _height;
 
+    /**
+     * Represents the current view mode.
+     * 0 = tree view
+     * 1 = detailed view
+     */
+    private int _viewMode;
+
     private boolean _saveWindowPosition;
     private boolean _saveTreeState;
 
@@ -66,6 +73,7 @@ public class MainWindowTool {
         JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSettingsSaveTreeStateItem();
         JMenuItem collapseAll = _ui.getViewerMenu().getViewCollapseAllItem();
         JMenuItem expandAll = _ui.getViewerMenu().getViewExpandAllItem();
+        JMenuItem switchViews = _ui.getViewerMenu().getViewSwitchViewsItem();
 
         addOpenItemListener(openItem);
         addWindowListener(frame);
@@ -73,6 +81,7 @@ public class MainWindowTool {
         addSaveTreeStateListener(saveTreeState);
         addCollapseAllListener(collapseAll);
         addExpandAllListener(expandAll);
+        addSwitchViewsListener(switchViews);
     }
 
     /**
@@ -108,11 +117,20 @@ public class MainWindowTool {
 
                         // enable the menu components
                         JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSettingsSaveTreeStateItem();
+                        JMenuItem switchViews = _ui.getViewerMenu().getViewSwitchViewsItem();
                         JMenuItem collapseAll = _ui.getViewerMenu().getViewCollapseAllItem();
                         JMenuItem expandAll = _ui.getViewerMenu().getViewExpandAllItem();
 
                         if (!saveTreeState.isEnabled())
                             saveTreeState.setEnabled(true);
+                        if (!switchViews.isEnabled() && XMLTreeUtil.isTsSapInvoiceListExternal(_ui.getTree()))
+                        {
+                            switchViews.setEnabled(true);
+                        }
+                        else if (switchViews.isEnabled() && !XMLTreeUtil.isTsSapInvoiceListExternal(_ui.getTree()))
+                        {
+                            switchViews.setEnabled(false);
+                        }
                         if (!collapseAll.isEnabled())
                             collapseAll.setEnabled(true);
                         if (!expandAll.isEnabled())
@@ -155,36 +173,10 @@ public class MainWindowTool {
 
                 if (_saveTreeState)
                 {
-                    saveTreeState();
+                    saveTreeExpansionState();
                 }
             }
 
-            private void saveWindowPosition()
-            {
-                int x = _ui.getFrame().getX();
-                int y = _ui.getFrame().getY();
-                int width = _ui.getFrame().getWidth();
-                int height = _ui.getFrame().getHeight();
-
-                saveWindowLocationProperties(x, y, width, height);
-            }
-
-            private void saveTreeState()
-            {
-                JTree tree = _ui.getTree();
-
-                if (tree == null)
-                {
-                    return;
-                }
-
-                String expState = XMLTreeUtil.getTreeExpansionState(tree, 0);
-
-                XMLTreeExpansionState expansionState = new XMLTreeExpansionState(expState);
-                int fileNameHash = _currentFilePath.hashCode();
-
-                XMLTreeUtil.serializeTreeExpansionState(expansionState, fileNameHash);
-            }
         });
     }
 
@@ -242,6 +234,63 @@ public class MainWindowTool {
             public void actionPerformed(ActionEvent event)
             {
                 XMLTreeUtil.expandAllNodes(_ui.getTree());
+            }
+        });
+    }
+
+    private void addSwitchViewsListener(JMenuItem switchViewsItem)
+    {
+        switchViewsItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                // switch from tree view to detailed view
+                if (_viewMode == 0)
+                {
+                    // save the current tree's state
+                    saveTreeExpansionState();
+
+                    DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree());
+                    _ui.initializeAndDisplayDetailedView(detailViewTool.getUI());
+
+                    _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(false);
+                    _ui.getViewerMenu().getViewExpandAllItem().setEnabled(false);
+                    _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(false);
+                    _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to tree view");
+
+                    _viewMode = 1;
+                }
+                // switch from detailed view to tree view
+                else
+                {
+                    try
+                    {
+                        InputStream ist = new FileInputStream(new File(_currentFilePath));
+                        InputSource is = new InputSource(ist);
+                        String fileName = getFileNameFromPathName(_currentFilePath);
+
+                        loadTreeExpansionState();
+
+                        _ui.initializeAndDisplayTree(is, fileName, _treeExpansionState);
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (TransformerException e) {
+                        e.printStackTrace();
+                    } catch (ParserConfigurationException e) {
+                        e.printStackTrace();
+                    } catch (SAXException e) {
+                        e.printStackTrace();
+                    }
+
+                    _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(true);
+                    _ui.getViewerMenu().getViewExpandAllItem().setEnabled(true);
+                    _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(true);
+                    _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to detailed view");
+
+                    _viewMode = 0;
+                }
             }
         });
     }
@@ -323,6 +372,33 @@ public class MainWindowTool {
             // initial expansion state. All nodes are collapsed (except for the root node which is represented by 0)
             _treeExpansionState = ",0";
         }
+    }
+
+    private void saveWindowPosition()
+    {
+        int x = _ui.getFrame().getX();
+        int y = _ui.getFrame().getY();
+        int width = _ui.getFrame().getWidth();
+        int height = _ui.getFrame().getHeight();
+
+        saveWindowLocationProperties(x, y, width, height);
+    }
+
+    private void saveTreeExpansionState()
+    {
+        JTree tree = _ui.getTree();
+
+        if (tree == null)
+        {
+            return;
+        }
+
+        String expState = XMLTreeUtil.getTreeExpansionState(tree, 0);
+
+        XMLTreeExpansionState expansionState = new XMLTreeExpansionState(expState);
+        int fileNameHash = _currentFilePath.hashCode();
+
+        XMLTreeUtil.serializeTreeExpansionState(expansionState, fileNameHash);
     }
 
     /**

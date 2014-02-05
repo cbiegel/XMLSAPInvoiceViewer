@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.StringTokenizer;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
+import org.w3c.dom.Node;
 import xmlviewer.tree.XMLTreeExpansionState;
 
 
@@ -187,4 +188,14 @@ public class XMLTreeUtil
         return result;
     }
 
+    /**
+     * Determines whether the given JTree represents a TsSapInvoiceExternal from the COAST system
+     * 
+     * @return True, if tree is a TsSapInvoiceExternal (converted from the corresponding XML file). False, if it is not.
+     */
+    public static boolean isTsSapInvoiceListExternal(JTree tree)
+    {
+        Node root = (Node) tree.getModel().getRoot();
+        return root.getNodeName().equals("com.scandlines.coast.common.payment.TsSapInvoiceListExternal");
+    }
 }
