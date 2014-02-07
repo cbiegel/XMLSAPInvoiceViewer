@@ -19,7 +19,7 @@ import javax.swing.border.LineBorder;
 public class DetailedView extends JPanel {
     private final JTable _detailTable;
     private final JLabel _elementNumberLabel;
-    private final JComboBox<String> _elementComboBox;
+    private final JComboBox _elementComboBox;
     private final JList _elementChildrenList;
     private JLabel _elementLabel;
 
@@ -178,7 +178,7 @@ public class DetailedView extends JPanel {
         return _elementNumberLabel;
     }
 
-    public JComboBox<String> getElementComboBox() {
+    public JComboBox getElementComboBox() {
         return _elementComboBox;
     }
 

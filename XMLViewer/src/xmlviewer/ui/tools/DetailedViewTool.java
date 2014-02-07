@@ -48,7 +48,7 @@ public class DetailedViewTool
     private void fillComboBoxData()
     {
         String[] data = DetailedViewUtil.getElementItemsFromTree(_tree);
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<String>(data);
+        DefaultComboBoxModel model = new DefaultComboBoxModel(data);
         _ui.getElementComboBox().setModel(model);
         _ui.getElementComboBox().setSelectedIndex(0);
     }
@@ -58,14 +58,14 @@ public class DetailedViewTool
      */
     private void setupListeners()
     {
-        JComboBox<String> elementComboBox = _ui.getElementComboBox();
+        JComboBox elementComboBox = _ui.getElementComboBox();
         JList subElementList = _ui.getElementChildrenList();
 
         addComboBoxListener(elementComboBox);
         addSubElementListListener(subElementList);
     }
 
-    private void addComboBoxListener(final JComboBox<String> comboBox)
+    private void addComboBoxListener(final JComboBox comboBox)
     {
         comboBox.addActionListener(new ActionListener() {
 
