@@ -2,6 +2,7 @@ package xmlviewer.ui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
@@ -34,6 +35,8 @@ public class MainWindow {
     private static final int DEFAULT_WIDTH = 400;
 
     private static final int DEFAULT_HEIGHT = 500;
+
+    private static final String ICON_FILE_PATH = ".\\Resources\\XMLViewerIcon_16_16.png";
 
     public MainWindow(int x, int y, int width, int height, boolean saveWindowPos, boolean saveTreeState)
     {
@@ -81,6 +84,9 @@ public class MainWindow {
             height = DEFAULT_HEIGHT;
         }
         _frame.setBounds(x_pos, y_pos, width, height);
+
+        ImageIcon frameIcon = new ImageIcon(ICON_FILE_PATH);
+        _frame.setIconImage(frameIcon.getImage());
 
         _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         _frame.setVisible(true);

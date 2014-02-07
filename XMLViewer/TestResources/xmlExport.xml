@@ -2,5 +2,23 @@
   <mAllowedOperations>0</mAllowedOperations>
   <mSapPaymentExportSequenceNumber>555555</mSapPaymentExportSequenceNumber>
   <mTotalNumberOfCashBooks>1</mTotalNumberOfCashBooks>
-  <tsSapInvoiceExternals/>
+  <tsSapInvoiceExternals>
+  <el>
+	<subElement1>
+		<subElementAttribute1>1</subElementAttribute1>
+		<subElementAttribute2>2</subElementAttribute2>
+		<subSubElement1>
+			<subSubElementAttribute1>11</subSubElementAttribute1>
+			<subSubElementAttribute2>12</subSubElementAttribute2>
+		</subSubElement1>
+		<subSubElement2>
+			<subSubElementAttribute1>21</subSubElementAttribute1>
+			<subSubElementAttribute2>22</subSubElementAttribute2>
+	</subSubElement2>
+	</subElement1>
+	<subElement2>2</subElement2>
+  </el>
+  <el/>
+  <el/>
+  </tsSapInvoiceExternals>
 </com.scandlines.coast.common.payment.TsSapInvoiceListExternal>

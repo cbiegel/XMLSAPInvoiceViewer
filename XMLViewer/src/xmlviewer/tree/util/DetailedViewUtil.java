@@ -17,11 +17,15 @@ import org.w3c.dom.NodeList;
  */
 public class DetailedViewUtil
 {
+    /**
+     * maps names of nodes (String) to their respective objects (Node). This map updates every time
+     * getSubElementsListFromTree() is called.
+     */
     public static Map<String, Node> nodeMap = new HashMap<String, Node>();
 
     /**
      * Transforms a given JTree into a String[] which holds the amount of sapInvoiceElements of the tree.
-     * The first entry of the array alway is "Meta Info".
+     * The first entry of the array always is "Meta Info".
      * For instance, a tree with 3 sapInvoiceElements will return: new String[]{"Meta Info", "Element 1", "Element 2",
      * "Element 3"}.
      * 
@@ -59,6 +63,14 @@ public class DetailedViewUtil
      */
     public static String[] getSubElementsListFromTree(Node element)
     {
+        if (element == null)
+        {
+            // reset the map
+            nodeMap = new HashMap<String, Node>();
+
+            return new String[0];
+        }
+
         List<String> resultList = new ArrayList<String>();
         helperSubElementsRecursive(element, "", resultList);
         String[] result = new String[resultList.size()];

@@ -45,7 +45,7 @@ public class XMLViewerMenu {
         _settingsSaveWindowLocation.setName("saveWindowLocation");
         _settingsSaveWindowLocation.setSelected(saveWindowPos);
 
-        _settingsSaveTreeState = new JCheckBoxMenuItem("Save tree state");
+        _settingsSaveTreeState = new JCheckBoxMenuItem("Save tree state on close");
         _settingsSaveTreeState.setName("saveTreeState");
         _settingsSaveTreeState.setSelected(saveTreeState);
         _settingsSaveTreeState.setEnabled(false);

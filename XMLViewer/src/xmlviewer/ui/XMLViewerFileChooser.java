@@ -1,7 +1,9 @@
 package xmlviewer.ui;
 
 import java.io.File;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -16,6 +18,7 @@ public class XMLViewerFileChooser {
     private final JFileChooser _fileChooser;
     private static String _lastFilePath = "";
     private static boolean _filePathChanged = false;
+    private static final String ICON_FILE_PATH = ".\\Resources\\XMLViewerIcon_16_16.png";
 
     public XMLViewerFileChooser() {
         _fileChooser = new JFileChooser("Open an XML file");
@@ -27,14 +30,18 @@ public class XMLViewerFileChooser {
         _fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
         _fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         final File startDir = new File(System.getProperty("user.home"));
-
         _fileChooser.setCurrentDirectory(startDir);
 
-        FileFilter xmlFilter = new FileNameExtensionFilter("XML file", "xml");
+        FileFilter xmlFilter = new FileNameExtensionFilter("XML file (*.xml)", "xml");
         _fileChooser.setFileFilter(xmlFilter);
         _fileChooser.addChoosableFileFilter(xmlFilter);
+        _fileChooser.setAcceptAllFileFilterUsed(false);
 
-        final int result = _fileChooser.showOpenDialog(null);
+        // JFileChooser inherits the icon of the parent in showOpenDialog
+        ImageIcon icon = new ImageIcon(ICON_FILE_PATH);
+        JFrame iconFrame = new JFrame();
+        iconFrame.setIconImage(icon.getImage());
+        final int result = _fileChooser.showOpenDialog(iconFrame);
 
         _fileChooser.setVisible(true);
         if (result == JFileChooser.APPROVE_OPTION) {

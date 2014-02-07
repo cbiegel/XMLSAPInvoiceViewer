@@ -144,7 +144,7 @@ public class DetailedViewTool
     private void fillTableWithData(String[][] data)
     {
         DefaultTableModel tableModel =
-            new DefaultTableModel(data, new String[] {"attributes", "values"})
+            new DefaultTableModel(data, new String[] {"Attributes", "Values"})
             {
                 @Override
                 public boolean isCellEditable(int row, int column)
@@ -171,7 +171,7 @@ public class DetailedViewTool
         }
 
         DefaultTableModel tableModel =
-            new DefaultTableModel(tableData, new String[] {"attributes", "values"})
+            new DefaultTableModel(tableData, new String[] {"Attributes", "Values"})
             {
                 @Override
                 public boolean isCellEditable(int row, int column)
