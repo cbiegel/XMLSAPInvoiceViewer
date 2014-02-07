@@ -16,6 +16,7 @@ public class MainWindowToolTest {
     @Test
     public void test()
     {
+        @SuppressWarnings("unused")
         MainWindowTool testWindow = new MainWindowTool();
     }
 

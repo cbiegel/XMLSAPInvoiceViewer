@@ -16,6 +16,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
 
 
+@SuppressWarnings("serial")
 public class DetailedView extends JPanel {
     private final JTable _detailTable;
     private final JLabel _elementNumberLabel;

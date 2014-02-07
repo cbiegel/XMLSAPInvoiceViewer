@@ -79,7 +79,6 @@ public class DetailedViewTool
                     _ui.getElementNumberLabel().setText("");
 
                     // fill the elementTable with data
-                    Node elementNode = (Node) _tree.getModel().getRoot();
                     fillTableWithMetaInfoData();
 
                     // reset list data
@@ -143,6 +142,7 @@ public class DetailedViewTool
 
     private void fillTableWithData(String[][] data)
     {
+        @SuppressWarnings("serial")
         DefaultTableModel tableModel =
             new DefaultTableModel(data, new String[] {"Attributes", "Values"})
             {
@@ -170,6 +170,7 @@ public class DetailedViewTool
             tableData[c][1] = child.getFirstChild().getNodeValue();
         }
 
+        @SuppressWarnings("serial")
         DefaultTableModel tableModel =
             new DefaultTableModel(tableData, new String[] {"Attributes", "Values"})
             {

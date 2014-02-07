@@ -37,6 +37,7 @@ public class XMLTreeCellRendererTest
     @Test
     public void test()
     {
+        @SuppressWarnings("unused")
         Component testComponent = _testRenderer.getTreeCellRendererComponent
                 (_testTree, _rootNode, false, false, false, 0, false);
     }

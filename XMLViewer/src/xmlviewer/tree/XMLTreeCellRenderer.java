@@ -13,6 +13,7 @@ import org.w3c.dom.Node;
  * 
  * @author cbiegel
  */
+@SuppressWarnings("serial")
 public class XMLTreeCellRenderer extends DefaultTreeCellRenderer {
 
     Color elementColor = new Color(0, 0, 128);

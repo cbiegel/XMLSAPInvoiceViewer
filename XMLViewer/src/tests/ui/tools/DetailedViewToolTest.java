@@ -31,6 +31,7 @@ public class DetailedViewToolTest {
     public void test()
     {
         DetailedViewTool tool = new DetailedViewTool(_tree);
+        @SuppressWarnings("unused")
         DetailedView ui = tool.getUI();
     }
 
