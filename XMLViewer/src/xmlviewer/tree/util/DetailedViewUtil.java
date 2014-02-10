@@ -130,7 +130,8 @@ public class DetailedViewUtil
 
             if (elem.getLength() == 1 && !elem.item(0).hasChildNodes())
             {
-                resultList.add(child.getNodeName());
+                String formattedChildName = formatChildName(child.getNodeName());
+                resultList.add(formattedChildName);
                 resultList.add(child.getFirstChild().getNodeValue());
             }
         }
@@ -161,6 +162,25 @@ public class DetailedViewUtil
         }
 
         return result;
+    }
+
+    /**
+     * Formats a given node name to cut off its prefix "m" (indicates a member variable).
+     * 
+     * @param childName
+     *            The node name to be formatted
+     * @return A formatted version of childName, i.e "mNodeName" returns "nodeName".
+     */
+    private static String formatChildName(String childName)
+    {
+        if (childName.startsWith("m"))
+        {
+            return "" + Character.toLowerCase(childName.charAt(1)) + childName.substring(2);
+        }
+        else
+        {
+            return Character.toLowerCase(childName.charAt(0)) + childName.substring(1);
+        }
     }
 
     /**
