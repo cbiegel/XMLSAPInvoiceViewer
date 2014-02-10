@@ -26,7 +26,7 @@ public class DetailedViewTool
 {
     private DetailedView _ui;
     private JTree _tree;
-    private Map<String, Node> _nodeMap;
+    private Map<Integer, Node> _nodeMap;
 
     public DetailedViewTool(JTree tree)
     {
@@ -123,8 +123,8 @@ public class DetailedViewTool
             {
                 if (list.getSelectedValue() != null)
                 {
-                    String nodeName = list.getSelectedValue().toString();
-                    Node selectedElement = _nodeMap.get(nodeName);
+                    int nodeCount = list.getSelectedIndex();
+                    Node selectedElement = _nodeMap.get(nodeCount);
                     String[][] tableData = DetailedViewUtil.getDetailsForSubElement(selectedElement);
 
                     fillTableWithData(tableData);

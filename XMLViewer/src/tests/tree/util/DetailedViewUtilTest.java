@@ -81,7 +81,7 @@ public class DetailedViewUtilTest
         // reset the static node map in DetailedViewUtil
         DetailedViewUtil.getSubElementsListFromTree(null);
 
-        Map<String, Node> nodeMap = DetailedViewUtil.getNodeMap();
+        Map<Integer, Node> nodeMap = DetailedViewUtil.getNodeMap();
 
         assertEquals(0, nodeMap.size());
 

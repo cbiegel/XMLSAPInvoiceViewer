@@ -21,7 +21,9 @@ public class DetailedViewUtil
      * maps names of nodes (String) to their respective objects (Node). This map updates every time
      * getSubElementsListFromTree() is called.
      */
-    public static Map<String, Node> nodeMap = new HashMap<String, Node>();
+    public static Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
+
+    private static int _nodeCount = 0;
 
     /**
      * Transforms a given JTree into a String[] which holds the amount of sapInvoiceElements of the tree.
@@ -66,13 +68,14 @@ public class DetailedViewUtil
         if (element == null)
         {
             // reset the map
-            nodeMap = new HashMap<String, Node>();
+            nodeMap = new HashMap<Integer, Node>();
 
             return new String[0];
         }
 
         List<String> resultList = new ArrayList<String>();
         helperSubElementsRecursive(element, "", resultList);
+        _nodeCount = 0;
         String[] result = new String[resultList.size()];
         result = resultList.toArray(result);
         return result;
@@ -97,7 +100,8 @@ public class DetailedViewUtil
                 {
                     String nodeName = (indentation + "|_ ") + child.getNodeName();
                     elementList.add(nodeName);
-                    nodeMap.put(nodeName, child);
+                    nodeMap.put(_nodeCount, child);
+                    ++_nodeCount;
                 }
                 helperSubElementsRecursive(child, (indentation + "    "), elementList);
             }
@@ -163,7 +167,7 @@ public class DetailedViewUtil
      * @return This map holds every node that was found in the getSubElementsListFromTree method.
      *         Every node (value) can be identified by its name (key).
      */
-    public static Map<String, Node> getNodeMap()
+    public static Map<Integer, Node> getNodeMap()
     {
         return nodeMap;
     }
