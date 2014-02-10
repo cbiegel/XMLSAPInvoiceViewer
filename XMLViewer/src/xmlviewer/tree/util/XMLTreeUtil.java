@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.StringTokenizer;
+import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 import org.w3c.dom.Node;
@@ -128,6 +129,13 @@ public class XMLTreeUtil
             if (!f.exists())
             {
                 f.mkdir();
+            }
+            if (!f.exists())
+            {
+                File test = new File(".\\");
+                JOptionPane.showMessageDialog(null, "Warning: No write permissions for: \n" + test.getAbsolutePath(),
+                    "Error saving tree state", JOptionPane.WARNING_MESSAGE);
+                return;
             }
 
             String outputFilePath = TREE_EXPANSION_FILE + hash + TREE_EXPANSION_FILE_SUFFIX;

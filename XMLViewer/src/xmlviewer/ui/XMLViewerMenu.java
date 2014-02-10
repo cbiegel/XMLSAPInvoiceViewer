@@ -6,6 +6,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
 
@@ -82,6 +83,7 @@ public class XMLViewerMenu {
         _settings.add(_settingsSaveWindowLocation);
 
         _view.add(_viewSwitchViews);
+        _view.add(new JSeparator());
         _view.add(_viewCollapseAll);
         _view.add(_viewExpandAll);
 
