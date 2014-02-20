@@ -1,5 +1,6 @@
-package xmlviewer.ui;
+package xmlviewer.ui.main;
 
+import java.awt.Component;
 import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -20,12 +21,12 @@ public class XMLViewerFileChooser {
     private static boolean _filePathChanged = false;
     private static final String ICON_FILE_PATH = ".\\Resources\\XMLViewerIcon_16_16.png";
 
-    public XMLViewerFileChooser() {
+    public XMLViewerFileChooser(Component parentFrame) {
         _fileChooser = new JFileChooser("Open an XML file");
-        setupFileChooser();
+        setupFileChooser(parentFrame);
     }
 
-    private void setupFileChooser()
+    private void setupFileChooser(Component parentFrame)
     {
         _fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
         _fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -41,7 +42,7 @@ public class XMLViewerFileChooser {
         ImageIcon icon = new ImageIcon(ICON_FILE_PATH);
         JFrame iconFrame = new JFrame();
         iconFrame.setIconImage(icon.getImage());
-        final int result = _fileChooser.showOpenDialog(iconFrame);
+        final int result = _fileChooser.showOpenDialog(parentFrame);
 
         _fileChooser.setVisible(true);
         if (result == JFileChooser.APPROVE_OPTION) {

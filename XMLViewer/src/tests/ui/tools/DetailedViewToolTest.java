@@ -2,12 +2,13 @@ package tests.ui.tools;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import javax.swing.JFrame;
 import javax.swing.JTree;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 import xmlviewer.tree.XMLTreeModel;
-import xmlviewer.ui.DetailedView;
+import xmlviewer.ui.detail.DetailedView;
 import xmlviewer.ui.tools.DetailedViewTool;
 
 
@@ -30,7 +31,7 @@ public class DetailedViewToolTest {
     @Test
     public void test()
     {
-        DetailedViewTool tool = new DetailedViewTool(_tree);
+        DetailedViewTool tool = new DetailedViewTool(_tree, new JFrame());
         @SuppressWarnings("unused")
         DetailedView ui = tool.getUI();
     }

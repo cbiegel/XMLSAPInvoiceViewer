@@ -63,7 +63,7 @@ public class DetailedViewUtil
      *            The Node that acts as a parent. The name of every child of element will be put into the String[].
      * @return A String[] with all the names of the children of element preceded by indentation.
      */
-    public static String[] getSubElementsListFromTree(Node element)
+    public static String[] getSubElementsListFromTree(Node element, boolean putNodeMap)
     {
         if (element == null)
         {
@@ -74,7 +74,7 @@ public class DetailedViewUtil
         }
 
         List<String> resultList = new ArrayList<String>();
-        helperSubElementsRecursive(element, "", resultList);
+        helperSubElementsRecursive(element, "", putNodeMap, resultList);
         _nodeCount = 0;
         String[] result = new String[resultList.size()];
         result = resultList.toArray(result);
@@ -85,7 +85,7 @@ public class DetailedViewUtil
      * Looks for children of the given node recursively. The name of every child will be put into elementList.
      * Because this method is tail recursive, elementList contains the result at the end of the recursion.
      */
-    private static void helperSubElementsRecursive(Node node, String indentation, List<String> elementList)
+    private static void helperSubElementsRecursive(Node node, String indentation, boolean putNodeMap, List<String> elementList)
     {
         NodeList children = node.getChildNodes();
 
@@ -100,10 +100,13 @@ public class DetailedViewUtil
                 {
                     String nodeName = (indentation + "|_ ") + child.getNodeName();
                     elementList.add(nodeName);
-                    nodeMap.put(_nodeCount, child);
+                    if (putNodeMap)
+                    {
+                        nodeMap.put(_nodeCount, child);
+                    }
                     ++_nodeCount;
                 }
-                helperSubElementsRecursive(child, (indentation + "    "), elementList);
+                helperSubElementsRecursive(child, (indentation + "    "), putNodeMap, elementList);
             }
         }
     }
@@ -171,7 +174,7 @@ public class DetailedViewUtil
      *            The node name to be formatted
      * @return A formatted version of childName, i.e "mNodeName" returns "nodeName".
      */
-    private static String formatChildName(String childName)
+    public static String formatChildName(String childName)
     {
         if (childName.startsWith("m"))
         {
@@ -181,6 +184,21 @@ public class DetailedViewUtil
         {
             return Character.toLowerCase(childName.charAt(0)) + childName.substring(1);
         }
+    }
+
+    public static String stripStringToLetters(String s)
+    {
+        String res = "";
+
+        for (int c = 0; c < s.length(); c++)
+        {
+            if (Character.isLetter(s.charAt(c)))
+            {
+                res += s.charAt(c);
+            }
+        }
+
+        return res;
     }
 
     /**

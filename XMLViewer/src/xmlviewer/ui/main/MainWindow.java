@@ -1,4 +1,4 @@
-package xmlviewer.ui;
+package xmlviewer.ui.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 import xmlviewer.tree.XMLTreeCellRenderer;
 import xmlviewer.tree.XMLTreeModel;
 import xmlviewer.tree.util.XMLTreeUtil;
+import xmlviewer.ui.detail.DetailedView;
 
 
 /**

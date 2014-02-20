@@ -18,8 +18,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import xmlviewer.tree.XMLTreeExpansionState;
 import xmlviewer.tree.util.XMLTreeUtil;
-import xmlviewer.ui.MainWindow;
-import xmlviewer.ui.XMLViewerFileChooser;
+import xmlviewer.ui.main.MainWindow;
+import xmlviewer.ui.main.XMLViewerFileChooser;
 
 
 /**
@@ -96,7 +96,7 @@ public class MainWindowTool {
 
             @Override
             public void actionPerformed(ActionEvent event) {
-                XMLViewerFileChooser filechooser = new XMLViewerFileChooser();
+                XMLViewerFileChooser filechooser = new XMLViewerFileChooser(_ui.getFrame());
 
                 _currentFilePath = filechooser.getLastFilePath();
 
@@ -251,7 +251,7 @@ public class MainWindowTool {
                     // save the current tree's state
                     saveTreeExpansionState();
 
-                    DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree());
+                    DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree(), _ui.getFrame());
                     _ui.initializeAndDisplayDetailedView(detailViewTool.getUI());
 
                     _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(false);

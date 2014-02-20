@@ -48,7 +48,8 @@ public class DetailedViewUtilTest
     @Test
     public void testGetSubElementsListFromTree()
     {
-        String[] subElementList = DetailedViewUtil.getSubElementsListFromTree(_sapInvoiceExternalElements.getFirstChild());
+        String[] subElementList =
+            DetailedViewUtil.getSubElementsListFromTree(_sapInvoiceExternalElements.getFirstChild(), true);
 
         String[] strippedStrings = stripStringArrayToLetters(subElementList);
 
@@ -79,7 +80,7 @@ public class DetailedViewUtilTest
     public void testGetNodeMap()
     {
         // reset the static node map in DetailedViewUtil
-        DetailedViewUtil.getSubElementsListFromTree(null);
+        DetailedViewUtil.getSubElementsListFromTree(null, true);
 
         Map<Integer, Node> nodeMap = DetailedViewUtil.getNodeMap();
 

@@ -1,4 +1,4 @@
-package xmlviewer.ui;
+package xmlviewer.ui.main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;

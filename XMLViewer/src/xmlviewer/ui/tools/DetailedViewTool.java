@@ -2,10 +2,17 @@ package xmlviewer.ui.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -13,7 +20,7 @@ import javax.swing.table.DefaultTableModel;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlviewer.tree.util.DetailedViewUtil;
-import xmlviewer.ui.DetailedView;
+import xmlviewer.ui.detail.DetailedView;
 
 
 /**
@@ -27,11 +34,16 @@ public class DetailedViewTool
     private DetailedView _ui;
     private JTree _tree;
     private Map<Integer, Node> _nodeMap;
+    private int _selectedTableRow;
+    private JFrame _parentFrame;
 
-    public DetailedViewTool(JTree tree)
+    public DetailedViewTool(JTree tree, JFrame parent)
     {
         _ui = new DetailedView();
         _tree = tree;
+        _nodeMap = new HashMap<Integer, Node>();
+        _selectedTableRow = -1;
+        _parentFrame = parent;
 
         setupListeners();
         fillComboBoxData();
@@ -60,9 +72,11 @@ public class DetailedViewTool
     {
         JComboBox elementComboBox = _ui.getElementComboBox();
         JList subElementList = _ui.getElementChildrenList();
+        JTable elementDetailTable = _ui.getElementDetailTable();
 
         addComboBoxListener(elementComboBox);
         addSubElementListListener(subElementList);
+        addElementDetailTableListener(elementDetailTable);
     }
 
     private void addComboBoxListener(final JComboBox comboBox)
@@ -91,7 +105,7 @@ public class DetailedViewTool
 
                     // fill the elementList with data
                     Node elementNode = getElementNode((comboBox.getSelectedIndex() - 1));
-                    String[] listData = DetailedViewUtil.getSubElementsListFromTree(elementNode);
+                    String[] listData = DetailedViewUtil.getSubElementsListFromTree(elementNode, true);
                     _nodeMap = DetailedViewUtil.getNodeMap();
 
                     _ui.getElementChildrenList().setListData(listData);
@@ -138,6 +152,89 @@ public class DetailedViewTool
                 }
             }
         });
+
+        list.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                if (e.isMetaDown())
+                {
+                    list.setSelectedIndex(list.locationToIndex(e.getPoint()));
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e)
+            {
+                if (e.isPopupTrigger())
+                {
+                    list.setSelectedIndex(list.locationToIndex(e.getPoint()));
+                    int selectedIndex = list.getSelectedIndex();
+
+                    if (selectedIndex < 0)
+                    {
+                        return;
+                    }
+
+                    Node selectedNode = _nodeMap.get(selectedIndex);
+
+                    if (isInvoiceItemOrPriceExternal(selectedNode))
+                    {
+                        JPopupMenu filterPopup = createFilterChildrenPopup(selectedNode);
+
+                        filterPopup.show(list, e.getX(), e.getY());
+                    }
+                }
+            }
+
+            private boolean isInvoiceItemOrPriceExternal(Node node)
+            {
+                String strippedName = DetailedViewUtil.stripStringToLetters(node.getNodeName());
+                return (strippedName.equals("mSapInvoiceItems") || strippedName.equals("mSapInvoiceItemRevenueDatas"));
+            }
+        });
+
+        list.addMouseMotionListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseDragged(MouseEvent e)
+            {
+                if (e.isMetaDown())
+                {
+                    list.setSelectedIndex(list.locationToIndex(e.getPoint()));
+                }
+            }
+        });
+    }
+
+    private void addElementDetailTableListener(final JTable table)
+    {
+        table.addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mousePressed(MouseEvent e)
+            {
+                if (_selectedTableRow == table.getSelectedRow())
+                {
+                    table.clearSelection();
+                    _selectedTableRow = -1;
+                }
+                else
+                {
+                    _selectedTableRow = table.getSelectedRow();
+                    if (_selectedTableRow >= 0)
+                    {
+                        table.setRowSelectionInterval(_selectedTableRow, _selectedTableRow);
+                    }
+                    else
+                    {
+                        int maxRow = table.getRowCount() - 1;
+                        table.setRowSelectionInterval(maxRow, maxRow);
+                    }
+                }
+            }
+        });
     }
 
     private void fillTableWithData(String[][] data)
@@ -150,6 +247,12 @@ public class DetailedViewTool
                 public boolean isCellEditable(int row, int column)
                 {
                     return false;
+                }
+
+                @Override
+                public Class<?> getColumnClass(int columnIndex)
+                {
+                    return String.class;
                 }
             };
 
@@ -179,9 +282,45 @@ public class DetailedViewTool
                 {
                     return false;
                 }
+
+                @Override
+                public Class<?> getColumnClass(int columnIndex)
+                {
+                    return String.class;
+                }
             };
 
         _ui.getElementDetailTable().setModel(tableModel);
 
+    }
+
+    private JPopupMenu createFilterChildrenPopup(final Node parentNode)
+    {
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem filterButton = new JMenuItem("Filter children...");
+        filterButton.addActionListener(new ActionListener()
+        {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                FilterChildrenTool filterTool =
+                    new FilterChildrenTool(parentNode, _ui.getElementChildrenList().getSelectedIndex(), _parentFrame);
+                String[] result = filterTool.showUI();
+
+                // TODO: Ergebnis des FilterTools verarbeiten
+
+                if (result != null)
+                {
+                    for (String string : result) {
+                        System.out.println(string);
+                    }
+
+                }
+            }
+        });
+
+        popup.add(filterButton);
+        return popup;
     }
 }

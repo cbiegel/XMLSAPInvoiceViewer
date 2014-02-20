@@ -1,8 +1,11 @@
-package xmlviewer.ui;
+package xmlviewer.ui.detail;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.SystemColor;
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComboBox;
@@ -14,6 +17,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 
 
 @SuppressWarnings("serial")
@@ -85,7 +89,7 @@ public class DetailedView extends JPanel {
         JSplitPane listTableSplitPane = new JSplitPane();
         listTableSplitPane.setResizeWeight(0.03);
 
-        JLabel lblSelectAnSapinvoiceitem = new JLabel("SapInvoiceExternals elements:");
+        JLabel lblSelectAnSapinvoiceitem = new JLabel("SapInvoiceExternals element:");
         lblSelectAnSapinvoiceitem.setFont(new Font("Tahoma", Font.PLAIN, 14));
         GroupLayout groupLayout = new GroupLayout(this);
         groupLayout.setHorizontalGroup(
@@ -153,7 +157,22 @@ public class DetailedView extends JPanel {
         listTableSplitPane.setLeftComponent(listScrollPane);
         listScrollPane.setViewportBorder(new LineBorder(Color.LIGHT_GRAY));
 
-        _elementChildrenList = new JList();
+        _elementChildrenList = new JList()
+        {
+            @Override
+            public int locationToIndex(Point location)
+            {
+                int index = super.locationToIndex(location);
+                if (index != -1 && !getCellBounds(index, index).contains(location))
+                {
+                    return -1;
+                }
+                else
+                {
+                    return index;
+                }
+            }
+        };
         listScrollPane.setViewportView(_elementChildrenList);
 
         JScrollPane tableScrollPane = new JScrollPane();
@@ -166,6 +185,7 @@ public class DetailedView extends JPanel {
         _detailTable.setFillsViewportHeight(true);
         _detailTable.setRowHeight(20);
         _detailTable.setAutoCreateRowSorter(true);
+        _detailTable.setDefaultRenderer(String.class, new NoBorderTableCellRenderer());
         tableScrollPane.setViewportView(_detailTable);
         setLayout(groupLayout);
 
@@ -190,5 +210,19 @@ public class DetailedView extends JPanel {
     public JLabel getElementLabel()
     {
         return _elementLabel;
+    }
+
+    protected class NoBorderTableCellRenderer extends DefaultTableCellRenderer
+    {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+            boolean isSelected, boolean hasFocus, int row, int col)
+        {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+            setBorder(BorderFactory.createMatteBorder(0, 0, 0, 0, table.getBackground()));
+
+            return c;
+        }
     }
 }
