@@ -27,6 +27,7 @@ public class XMLViewerMenu {
     private final JMenuItem _viewSwitchViews;
     private final JMenuItem _viewCollapseAll;
     private final JMenuItem _viewExpandAll;
+    private final JCheckBoxMenuItem _viewApplyFilter;
 
     public XMLViewerMenu(boolean saveWindowPos, boolean saveTreeState) {
         _menuBar = new JMenuBar();
@@ -63,6 +64,11 @@ public class XMLViewerMenu {
         _viewExpandAll.setName("expandAll");
         _viewExpandAll.setEnabled(false);
 
+        _viewApplyFilter = new JCheckBoxMenuItem("Apply filter");
+        _viewApplyFilter.setName("applyFilter");
+        _viewApplyFilter.setSelected(false);
+        _viewApplyFilter.setEnabled(false);
+
         setupMenuBar();
     }
 
@@ -76,6 +82,7 @@ public class XMLViewerMenu {
         _viewSwitchViews.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
         _viewCollapseAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
         _viewExpandAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+        _viewApplyFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
 
         _file.add(_open);
 
@@ -86,6 +93,8 @@ public class XMLViewerMenu {
         _view.add(new JSeparator());
         _view.add(_viewCollapseAll);
         _view.add(_viewExpandAll);
+        _view.add(new JSeparator());
+        _view.add(_viewApplyFilter);
 
         _menuBar.add(_file);
         _menuBar.add(_view);
@@ -142,6 +151,11 @@ public class XMLViewerMenu {
     public JMenuItem getViewExpandAllItem()
     {
         return _viewExpandAll;
+    }
+
+    public JCheckBoxMenuItem getViewApplyFilterItem()
+    {
+        return _viewApplyFilter;
     }
 
 }

@@ -6,17 +6,18 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlviewer.tree.util.DetailedViewUtil;
+import xmlviewer.ui.CustomCheckBox;
 import xmlviewer.ui.detail.FilterChildren;
 
 
@@ -25,14 +26,14 @@ public class FilterChildrenTool
     private FilterChildren _ui;
     private Node _parentNode;
     private int _parentNodeIndex;
-    private Map<JCheckBox, Set<JCheckBox>> _childrenAttributesMap;
-    private String[] _result;
+    private Map<CustomCheckBox, List<CustomCheckBox>> _childrenAttributesMap;
+    private Map<String, String[]> _result;
 
     public FilterChildrenTool(Node parentNode, int parentNodeIndex, JFrame owner)
     {
         _parentNode = parentNode;
         _parentNodeIndex = parentNodeIndex;
-        _childrenAttributesMap = new HashMap<JCheckBox, Set<JCheckBox>>();
+        _childrenAttributesMap = new HashMap<CustomCheckBox, List<CustomCheckBox>>();
         _ui = new FilterChildren(owner);
         initializeUI();
         setupListeners();
@@ -42,7 +43,7 @@ public class FilterChildrenTool
     {
         _ui.getUIParentNameLabel().setText(_parentNode.getNodeName());
 
-        String[] children = DetailedViewUtil.getSubElementsListFromTree(_parentNode, false);
+        String[] children = DetailedViewUtil.getSubElementsListFromTree(_parentNode, false, false);
         String[] trimmedData = new String[children.length];
 
         for (int c = 0; c < children.length; c++)
@@ -55,24 +56,33 @@ public class FilterChildrenTool
 
         for (String s : childrenList)
         {
-            JCheckBox checkBox = new JCheckBox(s);
-            String[] childNodes = DetailedViewUtil.getSubElementsListFromTree(_parentNode, false);
+            CustomCheckBox checkBox = new CustomCheckBox(s);
+            String[] childNodes = DetailedViewUtil.getSubElementsListFromTree(_parentNode, false, false);
             String[] directAttributes = getDirectAttributesSetForElement(childNodes, checkBox.getText());
             String[] indirectAttributes = getIndirectAttributesSetForElement(childNodes, checkBox.getText());
-            Set<JCheckBox> checkBoxAttributes = new HashSet<JCheckBox>();
+            Set<CustomCheckBox> checkBoxAttributesSet = new HashSet<CustomCheckBox>();
 
-            // put entry in map
+            // add direct attributes
             for (int c = 0; c < directAttributes.length; c++)
             {
-                JCheckBox cb = new JCheckBox(directAttributes[c]);
-                checkBoxAttributes.add(cb);
+                CustomCheckBox cb = new CustomCheckBox(directAttributes[c]);
+                checkBoxAttributesSet.add(cb);
             }
+
+            // add indirect attributes
             for (int c = 0; c < indirectAttributes.length; c++)
             {
-                JCheckBox cb = new JCheckBox(indirectAttributes[c]);
-                checkBoxAttributes.add(cb);
+                CustomCheckBox cb = new CustomCheckBox(indirectAttributes[c]);
+                checkBoxAttributesSet.add(cb);
             }
-            _childrenAttributesMap.put(checkBox, checkBoxAttributes);
+
+            List<CustomCheckBox> checkBoxAttributesList = new ArrayList<CustomCheckBox>();
+            checkBoxAttributesList.addAll(checkBoxAttributesSet);
+
+            // sort alphabetically
+            checkBoxAttributesList = sortCheckBoxesAlphabetically(checkBoxAttributesList);
+
+            _childrenAttributesMap.put(checkBox, checkBoxAttributesList);
 
             _ui.getUIChildrenCheckBoxList().addCheckBox(checkBox);
         }
@@ -81,13 +91,24 @@ public class FilterChildrenTool
     private void setupListeners()
     {
         JButton okButton = _ui.getUIOkButton();
+        JButton cancelButton = _ui.getUICancelButton();
+        JButton childrenSelectAll = _ui.getUISelectAllChildrenButton();
+        JButton childrenDeselectAll = _ui.getUIDeselectAllChildrenButton();
+        JButton attrSelectAll = _ui.getUISelectAllAttributesButton();
+        JButton attrDeselectAll = _ui.getUIDeselectAllAttributesButton();
 
         addOKButtonListener(okButton);
 
-        for (JCheckBox checkBox : _ui.getUIChildrenCheckBoxList().getAllCheckBoxes())
+        for (CustomCheckBox checkBox : _ui.getUIChildrenCheckBoxList().getAllCheckBoxes())
         {
             addChildrenCheckBoxListener(checkBox);
         }
+
+        addCancelButtonListener(cancelButton);
+        addSelectAllChildrenCheckBoxesListener(childrenSelectAll);
+        addDeselectAllChildrenCheckBoxListener(childrenDeselectAll);
+        addSelectAllAttributesCheckBoxListener(attrSelectAll);
+        addDeselectAllAttributesCheckBoxListener(attrDeselectAll);
 
     }
 
@@ -99,12 +120,20 @@ public class FilterChildrenTool
             @Override
             public void actionPerformed(ActionEvent event)
             {
-                JCheckBox[] selectedAttributes = _ui.getUIAttributesCheckBoxList().getSelectedCheckBoxes();
-                String[] result = new String[selectedAttributes.length];
-
-                for (int c = 0; c < selectedAttributes.length; c++)
+                Map<String, String[]> result = new HashMap<String, String[]>();
+                for (CustomCheckBox cb : _childrenAttributesMap.keySet())
                 {
-                    result[c] = selectedAttributes[c].getText();
+                    if (cb.isSelected())
+                    {
+                        CustomCheckBox[] selectedAttributes = _ui.getUIAttributesCheckBoxList().getSelectedAttributes(cb);
+                        String parentName = cb.getText();
+                        String[] attributes = new String[selectedAttributes.length];
+                        for (int c = 0; c < selectedAttributes.length; c++)
+                        {
+                            attributes[c] = selectedAttributes[c].getText();
+                        }
+                        result.put(parentName, attributes);
+                    }
                 }
 
                 _result = result;
@@ -113,40 +142,30 @@ public class FilterChildrenTool
         });
     }
 
-    private void addChildrenCheckBoxListener(final JCheckBox checkBox)
+    private void addCancelButtonListener(JButton button)
+    {
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                _result = null;
+                _ui.dispose();
+            }
+        });
+    }
+
+    private void addChildrenCheckBoxListener(final CustomCheckBox checkBox)
     {
         checkBox.addItemListener(new ItemListener() {
 
             @Override
             public void itemStateChanged(ItemEvent event)
             {
-                // List<JCheckBox> selectedChildren = new ArrayList<JCheckBox>();
-                // for (JCheckBox cb : _childrenAttributesMap.keySet())
-                // {
-                // if (cb.isSelected())
-                // {
-                // selectedChildren.add(cb);
-                // }
-                // }
-                //
-                // List<Set<JCheckBox>> attributesList = new ArrayList<Set<JCheckBox>>();
-                // for (JCheckBox cb : selectedChildren)
-                // {
-                // Set<JCheckBox> attributes = new HashSet<JCheckBox>();
-                //
-                // for (JCheckBox checkBox : _childrenAttributesMap.get(cb))
-                // {
-                // attributes.add(checkBox);
-                // }
-                //
-                // attributesList.add(attributes);
-                // }
-                // _ui.getUIAttributesCheckBoxList().makeUnionAndDisplayData(attributesList);
+                List<CustomCheckBox> selectedChildren = new ArrayList<CustomCheckBox>();
+                Map<CustomCheckBox, List<CustomCheckBox>> selectedChildrenMap =
+                    new HashMap<CustomCheckBox, List<CustomCheckBox>>();
 
-                List<JCheckBox> selectedChildren = new ArrayList<JCheckBox>();
-                Map<JCheckBox, List<JCheckBox>> selectedChildrenMap = new HashMap<JCheckBox, List<JCheckBox>>();
-
-                for (JCheckBox cb : _childrenAttributesMap.keySet())
+                for (CustomCheckBox cb : _childrenAttributesMap.keySet())
                 {
                     if (cb.isSelected())
                     {
@@ -154,14 +173,78 @@ public class FilterChildrenTool
                     }
                 }
 
-                for (JCheckBox cb : selectedChildren)
+                for (CustomCheckBox cb : selectedChildren)
                 {
-                    List<JCheckBox> attributes = new ArrayList<JCheckBox>();
+                    List<CustomCheckBox> attributes = new ArrayList<CustomCheckBox>();
                     attributes.addAll(_childrenAttributesMap.get(cb));
                     selectedChildrenMap.put(cb, attributes);
                 }
 
                 _ui.getUIAttributesCheckBoxList().displayCheckBoxComponents(selectedChildrenMap);
+            }
+        });
+    }
+
+    private void addSelectAllChildrenCheckBoxesListener(JButton button)
+    {
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                CustomCheckBox[] allCheckBoxes = _ui.getUIChildrenCheckBoxList().getAllCheckBoxes();
+                for (CustomCheckBox cb : allCheckBoxes)
+                {
+                    cb.setSelected(true);
+                }
+            }
+        });
+    }
+
+    private void addDeselectAllChildrenCheckBoxListener(JButton button)
+    {
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                CustomCheckBox[] allCheckBoxes = _ui.getUIChildrenCheckBoxList().getAllCheckBoxes();
+                for (CustomCheckBox cb : allCheckBoxes)
+                {
+                    cb.setSelected(false);
+                }
+            }
+        });
+    }
+
+    private void addSelectAllAttributesCheckBoxListener(JButton button)
+    {
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                CustomCheckBox[] allCheckBoxes = _ui.getUIAttributesCheckBoxList().getAllCheckBoxes();
+                for (CustomCheckBox cb : allCheckBoxes)
+                {
+                    cb.setSelected(true);
+                }
+            }
+        });
+    }
+
+    private void addDeselectAllAttributesCheckBoxListener(JButton button)
+    {
+        button.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                CustomCheckBox[] allCheckBoxes = _ui.getUIAttributesCheckBoxList().getAllCheckBoxes();
+                for (CustomCheckBox cb : allCheckBoxes)
+                {
+                    cb.setSelected(false);
+                }
             }
         });
     }
@@ -243,7 +326,33 @@ public class FilterChildrenTool
         return indirectAttributes.toArray(new String[indirectAttributes.size()]);
     }
 
-    public String[] showUI()
+    private List<CustomCheckBox> sortCheckBoxesAlphabetically(List<CustomCheckBox> list)
+    {
+        List<CustomCheckBox> result = new ArrayList<CustomCheckBox>();
+        String[] names = new String[list.size()];
+
+        for (int c = 0; c < list.size(); c++)
+        {
+            names[c] = list.get(c).getText();
+        }
+
+        Arrays.sort(names);
+
+        for (int c = 0; c < names.length; c++)
+        {
+            CustomCheckBox cb = new CustomCheckBox(names[c]);
+            result.add(c, cb);
+        }
+
+        return result;
+    }
+
+    /**
+     * Creates a new instance of FilterChildren (modal dialog)
+     * 
+     * @return A Map of selected elements -> selected attributes (check boxes checked or unchecked by the user)
+     */
+    public Map<String, String[]> showUI()
     {
         _ui.setModalityType(ModalityType.APPLICATION_MODAL);
         _ui.setModal(true);

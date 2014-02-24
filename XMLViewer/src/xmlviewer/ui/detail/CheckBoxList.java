@@ -5,13 +5,10 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
@@ -19,6 +16,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import xmlviewer.ui.CustomCheckBox;
 
 
 @SuppressWarnings("serial")
@@ -37,7 +35,7 @@ public class CheckBoxList extends JList
                 int index = locationToIndex(e.getPoint());
 
                 if (index != -1) {
-                    JCheckBox checkbox = (JCheckBox)
+                    CustomCheckBox checkbox = (CustomCheckBox)
                         getModel().getElementAt(index);
                     checkbox.setSelected(
                             !checkbox.isSelected());
@@ -50,52 +48,36 @@ public class CheckBoxList extends JList
         setFixedCellHeight(20);
     }
 
-    public void makeUnionAndDisplayData(List<Set<JCheckBox>> attributeSets)
+    /**
+     * Sets the list data according to the given data.
+     * 
+     * @param childrenAttributesMap
+     *            A map which maps parents to their list of attributes
+     */
+    public void displayCheckBoxComponents(Map<CustomCheckBox, List<CustomCheckBox>> childrenAttributesMap)
     {
-        if (attributeSets.size() == 0)
+        List<CustomCheckBox> display = new ArrayList<CustomCheckBox>();
+
+        for (CustomCheckBox cb : childrenAttributesMap.keySet())
         {
-            setListData(new JCheckBox[0]);
-        }
-        else
-        {
-            Set<JCheckBox> firstSet = attributeSets.get(0);
-            for (Set<JCheckBox> attributeSet : attributeSets)
-            {
-                firstSet.addAll(attributeSet);
-            }
-
-            JCheckBox[] checkBoxArray = firstSet.toArray(new JCheckBox[firstSet.size()]);
-            checkBoxArray = sortCheckBoxesAlphabetically(checkBoxArray);
-
-            setListData(checkBoxArray);
-        }
-    }
-
-    public void displayCheckBoxComponents(Map<JCheckBox, List<JCheckBox>> childrenAttributesMap)
-    {
-        List<JCheckBox> display = new ArrayList<JCheckBox>();
-
-        for (JCheckBox cb : childrenAttributesMap.keySet())
-        {
-            List<JCheckBox> component = getSingleCheckBoxComponent(cb, childrenAttributesMap.get(cb));
-            for (JCheckBox jCheckBox : component)
+            List<CustomCheckBox> component = getSingleCheckBoxComponent(cb, childrenAttributesMap.get(cb));
+            for (CustomCheckBox jCheckBox : component)
             {
                 display.add(jCheckBox);
             }
         }
-        JCheckBox[] checkBoxArray = display.toArray(new JCheckBox[display.size()]);
+        CustomCheckBox[] checkBoxArray = display.toArray(new CustomCheckBox[display.size()]);
         setListData(checkBoxArray);
     }
 
-    private List<JCheckBox> getSingleCheckBoxComponent(JCheckBox header, List<JCheckBox> attributeList)
+    private List<CustomCheckBox> getSingleCheckBoxComponent(CustomCheckBox header, List<CustomCheckBox> attributeList)
     {
-        List<JCheckBox> result = new ArrayList<JCheckBox>();
+        List<CustomCheckBox> result = new ArrayList<CustomCheckBox>();
         result.add(getHeaderBox(header));
 
-        JCheckBox[] attributes = attributeList.toArray(new JCheckBox[attributeList.size()]);
-        attributes = sortCheckBoxesAlphabetically(attributes);
+        CustomCheckBox[] attributes = attributeList.toArray(new CustomCheckBox[attributeList.size()]);
 
-        for (JCheckBox cb : attributes)
+        for (CustomCheckBox cb : attributes)
         {
             result.add(cb);
         }
@@ -105,31 +87,18 @@ public class CheckBoxList extends JList
         return result;
     }
 
-    private JCheckBox[] sortCheckBoxesAlphabetically(JCheckBox[] arr)
+    /**
+     * Adds a check box to the list and refreshes its content in the display. A check box can only be added to the list
+     * if
+     * it does not contain it already
+     * 
+     * @param checkBox
+     *            The check box to be added to the list
+     */
+    public void addCheckBox(CustomCheckBox checkBox)
     {
-        JCheckBox[] result = new JCheckBox[arr.length];
-        String[] names = new String[arr.length];
-
-        for (int c = 0; c < arr.length; c++)
-        {
-            names[c] = arr[c].getText();
-        }
-
-        Arrays.sort(names);
-
-        for (int c = 0; c < names.length; c++)
-        {
-            JCheckBox cb = new JCheckBox(names[c]);
-            result[c] = cb;
-        }
-
-        return result;
-    }
-
-    public void addCheckBox(JCheckBox checkBox)
-    {
-        JCheckBox[] currentCheckBoxes = getAllCheckBoxes();
-        JCheckBox[] newCheckBoxes = new JCheckBox[currentCheckBoxes.length + 1];
+        CustomCheckBox[] currentCheckBoxes = getAllCheckBoxes();
+        CustomCheckBox[] newCheckBoxes = new CustomCheckBox[currentCheckBoxes.length + 1];
         int containsPos = containsCheckAtPositionBox(currentCheckBoxes, checkBox);
 
         // only add checkBox if it is not in the current list already
@@ -145,14 +114,20 @@ public class CheckBoxList extends JList
         }
     }
 
-    public void removeCheckBox(JCheckBox checkBox)
+    /**
+     * Removes a check box from the list (if it exists)
+     * 
+     * @param checkBox
+     *            The check box to be removed from the list
+     */
+    public void removeCheckBox(CustomCheckBox checkBox)
     {
-        JCheckBox[] currentCheckBoxes = getAllCheckBoxes();
+        CustomCheckBox[] currentCheckBoxes = getAllCheckBoxes();
         int containsPosition = containsCheckAtPositionBox(currentCheckBoxes, checkBox);
 
         if (containsPosition != -1)
         {
-            JCheckBox[] newData = new JCheckBox[currentCheckBoxes.length - 1];
+            CustomCheckBox[] newData = new CustomCheckBox[currentCheckBoxes.length - 1];
 
             for (int c = 0; c < containsPosition; c++)
             {
@@ -171,7 +146,7 @@ public class CheckBoxList extends JList
      * checkBox.
      * If it does not contain checkBox, returns -1.
      */
-    private int containsCheckAtPositionBox(JCheckBox[] checkBoxSet, JCheckBox checkBox)
+    private int containsCheckAtPositionBox(CustomCheckBox[] checkBoxSet, CustomCheckBox checkBox)
     {
         // check if currentCheckBoxes contains checkBox
         for (int c = 0; c < checkBoxSet.length; c++)
@@ -185,10 +160,15 @@ public class CheckBoxList extends JList
         return -1;
     }
 
-    public JCheckBox[] getAllCheckBoxes()
+    /**
+     * Collects all check boxes in the list and bundles them in an array
+     * 
+     * @return A CustomCheckBox[] that contains every check box in this list
+     */
+    public CustomCheckBox[] getAllCheckBoxes()
     {
         ListModel model = getModel();
-        JCheckBox[] result = new JCheckBox[model.getSize()];
+        CustomCheckBox[] result = new CustomCheckBox[model.getSize()];
 
         // prevent an ArrayIndexOutOfBoundsException for the model
         if (model.getSize() == 0)
@@ -205,37 +185,74 @@ public class CheckBoxList extends JList
         {
             for (int c = 0; c < model.getSize(); c++)
             {
-                result[c] = (JCheckBox) model.getElementAt(c);
+                result[c] = (CustomCheckBox) model.getElementAt(c);
             }
         }
 
         return result;
     }
 
-    public JCheckBox[] getSelectedCheckBoxes()
+    /**
+     * Collects every selected attribute (their check box is marked as selected) of a parent to an array
+     * 
+     * @return Every selected attribute of parent in a CustomCheckBox[]
+     */
+    public CustomCheckBox[] getSelectedAttributes(CustomCheckBox parent)
     {
-        JCheckBox[] allCheckBoxes = getAllCheckBoxes();
-        List<JCheckBox> selectedCheckBoxes = new ArrayList<JCheckBox>();
+        CustomCheckBox[] allCheckBoxes = getAllCheckBoxes();
+        List<CustomCheckBox> selectedCheckBoxes = new ArrayList<CustomCheckBox>();
+        int headerPosition = -1;
+        int trailerPosition = -1;
 
-        for (JCheckBox cb : allCheckBoxes)
+        // find the parent header
+        for (int c = 0; c < allCheckBoxes.length; c++)
         {
-            if (cb.isSelected())
+            if (allCheckBoxes[c].isHeader())
             {
-                selectedCheckBoxes.add(cb);
+                if (allCheckBoxes[c].getText().equals(parent.getText()))
+                {
+                    headerPosition = c;
+                    break;
+                }
             }
         }
 
-        return selectedCheckBoxes.toArray(new JCheckBox[selectedCheckBoxes.size()]);
+        // find the corresponding trailer
+        for (int c = headerPosition; c < allCheckBoxes.length; c++)
+        {
+            if (allCheckBoxes[c].isTrailer())
+            {
+                trailerPosition = c;
+                break;
+            }
+        }
+
+        // get all the selected check boxes in the interval (headerPosition, trailerPosition)
+        for (int c = headerPosition + 1; c < trailerPosition; c++)
+        {
+            if (allCheckBoxes[c].isSelected())
+            {
+                selectedCheckBoxes.add(allCheckBoxes[c]);
+            }
+        }
+
+        return selectedCheckBoxes.toArray(new CustomCheckBox[selectedCheckBoxes.size()]);
     }
 
-    private JCheckBox getHeaderBox(JCheckBox cb)
+    private CustomCheckBox getHeaderBox(CustomCheckBox cb)
     {
-        JCheckBox result = new JCheckBox(cb.getText())
+        CustomCheckBox result = new CustomCheckBox(cb.getText())
         {
             @Override
             public boolean isSelected()
             {
                 return false;
+            }
+
+            @Override
+            public boolean isHeader()
+            {
+                return true;
             }
         };
         Icon invis = new ImageIcon();
@@ -244,14 +261,20 @@ public class CheckBoxList extends JList
         return result;
     }
 
-    private JCheckBox getInvisibleBox()
+    private CustomCheckBox getInvisibleBox()
     {
-        JCheckBox result = new JCheckBox("")
+        CustomCheckBox result = new CustomCheckBox("")
         {
             @Override
             public boolean isSelected()
             {
                 return false;
+            }
+
+            @Override
+            public boolean isTrailer()
+            {
+                return true;
             }
         };
         Icon invis = new ImageIcon();
@@ -279,25 +302,17 @@ public class CheckBoxList extends JList
         public Component getListCellRendererComponent(JList list, Object value, int index,
             boolean isSelected, boolean cellHasFocus)
         {
-            if (value == null)
-            {
-                System.out.println("List: " + list + "\nIndex: " + index + "\nisSelected: " + isSelected + "\ncellHasFocus: "
-                    + cellHasFocus);
-                return null;
-            }
-
-            JCheckBox checkbox = (JCheckBox) value;
-            checkbox.setBackground(isSelected ?
-                getBackground() : getBackground());
-            checkbox.setForeground(isSelected ?
-                getForeground() : getForeground());
-            checkbox.setEnabled(isEnabled());
+            CustomCheckBox checkbox = (CustomCheckBox) value;
+            checkbox.setBackground(getBackground());
+            checkbox.setForeground(getForeground());
+            checkbox.setEnabled(checkbox.isEnabled());
             checkbox.setFont(getFont());
             checkbox.setFocusPainted(false);
             checkbox.setBorderPainted(false);
             checkbox.setBorder(isSelected ?
                 UIManager.getBorder(
                         "List.focusCellHighlightBorder") : noFocusBorder);
+            repaint();
             return checkbox;
         }
     }

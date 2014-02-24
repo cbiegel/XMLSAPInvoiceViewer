@@ -23,6 +23,10 @@ public class FilterChildren extends JDialog {
     private JLabel _parentNameLabel;
     private JButton _okButton;
     private JButton _cancelButton;
+    private JButton _selectAllChildrenButton;
+    private JButton _deselectAllChildrenButton;
+    private JButton _selectAllAttributesButton;
+    private JButton _deselectAllAttributesButton;
 
     /**
      * Create the dialog.
@@ -34,8 +38,8 @@ public class FilterChildren extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         final JPanel contentPanel = new JPanel();
 
-        int width = 600;
-        int height = 350;
+        int width = 630;
+        int height = 380;
         int x = ((owner.getWidth() / 2) - (width / 2) + owner.getX());
         int y = ((owner.getHeight() / 2) - (height / 2) + owner.getY());
 
@@ -48,7 +52,7 @@ public class FilterChildren extends JDialog {
 
         JSeparator separator = new JSeparator();
 
-        JLabel lblNewLabel = new JLabel("Include children:");
+        JLabel lblNewLabel = new JLabel("Filter children:");
         lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 
         JLabel lblIncludeAttributes = new JLabel("Include attributes:");
@@ -57,24 +61,62 @@ public class FilterChildren extends JDialog {
         JScrollPane scrollPane = new JScrollPane();
 
         JScrollPane scrollPane_1 = new JScrollPane();
+
+        JPanel selectPanel_children = new JPanel();
+
+        JPanel selectPanel_attributes = new JPanel();
+        selectPanel_attributes.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+        _selectAllAttributesButton = new JButton("Select All");
+        selectPanel_attributes.add(_selectAllAttributesButton);
+
+        _deselectAllAttributesButton = new JButton("Deselect All");
+        selectPanel_attributes.add(_deselectAllAttributesButton);
         GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
         gl_contentPanel.setHorizontalGroup(
-                gl_contentPanel.createParallelGroup(Alignment.TRAILING)
-                        .addGroup(Alignment.LEADING, gl_contentPanel.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                                        .addGroup(gl_contentPanel.createSequentialGroup()
-                                                .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
-                                                .addGap(52)
-                                                .addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE))
-                                        .addComponent(separator, GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-                                        .addComponent(panel, GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE))
-                                .addContainerGap())
+                gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                        .addGroup(
+                            gl_contentPanel.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addGroup(
+                                        gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(separator, GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+                                                .addComponent(panel, GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
+                                                .addGroup(
+                                                    gl_contentPanel.createSequentialGroup()
+                                                            .addGroup(
+                                                                gl_contentPanel.createParallelGroup(Alignment.LEADING)
+                                                                        .addComponent(
+                                                                            selectPanel_children,
+                                                                            GroupLayout.DEFAULT_SIZE,
+                                                                            GroupLayout.DEFAULT_SIZE,
+                                                                            Short.MAX_VALUE)
+                                                                        .addComponent(scrollPane))
+                                                            .addGap(0)
+                                                            .addGroup(
+                                                                gl_contentPanel.createParallelGroup(Alignment.TRAILING)
+                                                                        .addGroup(
+                                                                            gl_contentPanel.createSequentialGroup()
+                                                                                    .addGap(52)
+                                                                                    .addComponent(
+                                                                                        scrollPane_1,
+                                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                                        274,
+                                                                                        Short.MAX_VALUE))
+                                                                        .addGroup(
+                                                                            gl_contentPanel.createSequentialGroup()
+                                                                                    .addGap(49)
+                                                                                    .addComponent(
+                                                                                        selectPanel_attributes,
+                                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                                        277,
+                                                                                        Short.MAX_VALUE)))))
+                                    .addContainerGap())
                         .addGroup(gl_contentPanel.createSequentialGroup()
                                 .addGap(90)
-                                .addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                                .addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                                 .addGap(211)
-                                .addComponent(lblIncludeAttributes, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                                .addComponent(lblIncludeAttributes, GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                                 .addGap(72))
                 );
         gl_contentPanel.setVerticalGroup(
@@ -95,23 +137,34 @@ public class FilterChildren extends JDialog {
                                         GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(ComponentPlacement.RELATED)
                                     .addGroup(
-                                        gl_contentPanel.createParallelGroup(Alignment.BASELINE)
+                                        gl_contentPanel.createParallelGroup(Alignment.BASELINE, false)
                                                 .addComponent(
                                                     lblIncludeAttributes,
-                                                    GroupLayout.DEFAULT_SIZE,
+                                                    GroupLayout.PREFERRED_SIZE,
                                                     15,
-                                                    Short.MAX_VALUE)
-                                                .addComponent(
-                                                    lblNewLabel,
-                                                    GroupLayout.DEFAULT_SIZE,
-                                                    GroupLayout.DEFAULT_SIZE,
-                                                    Short.MAX_VALUE))
+                                                    GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(lblNewLabel))
                                     .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-                                            .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-                                            .addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
-                                    .addGap(10))
+                                    .addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING)
+                                            .addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                                            .addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
+                                    .addPreferredGap(ComponentPlacement.UNRELATED)
+                                    .addGroup(
+                                        gl_contentPanel.createParallelGroup(Alignment.TRAILING, false)
+                                                .addComponent(selectPanel_children, 0, 0, Short.MAX_VALUE)
+                                                .addComponent(
+                                                    selectPanel_attributes,
+                                                    GroupLayout.PREFERRED_SIZE,
+                                                    28,
+                                                    Short.MAX_VALUE)))
                 );
+        selectPanel_children.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+        _selectAllChildrenButton = new JButton("Select All");
+        selectPanel_children.add(_selectAllChildrenButton);
+
+        _deselectAllChildrenButton = new JButton("Deselect All");
+        selectPanel_children.add(_deselectAllChildrenButton);
 
         _attributesCheckBoxList = new CheckBoxList();
         scrollPane_1.setViewportView(_attributesCheckBoxList);
@@ -178,5 +231,21 @@ public class FilterChildren extends JDialog {
 
     public JButton getUICancelButton() {
         return _cancelButton;
+    }
+
+    public JButton getUISelectAllChildrenButton() {
+        return _selectAllChildrenButton;
+    }
+
+    public JButton getUISelectAllAttributesButton() {
+        return _selectAllAttributesButton;
+    }
+
+    public JButton getUIDeselectAllChildrenButton() {
+        return _deselectAllChildrenButton;
+    }
+
+    public JButton getUIDeselectAllAttributesButton() {
+        return _deselectAllAttributesButton;
     }
 }

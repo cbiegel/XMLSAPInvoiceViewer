@@ -21,7 +21,7 @@ public class DetailedViewUtil
      * maps names of nodes (String) to their respective objects (Node). This map updates every time
      * getSubElementsListFromTree() is called.
      */
-    public static Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
+    private static Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
 
     private static int _nodeCount = 0;
 
@@ -63,9 +63,9 @@ public class DetailedViewUtil
      *            The Node that acts as a parent. The name of every child of element will be put into the String[].
      * @return A String[] with all the names of the children of element preceded by indentation.
      */
-    public static String[] getSubElementsListFromTree(Node element, boolean putNodeMap)
+    public static String[] getSubElementsListFromTree(Node element, boolean putNodeMap, boolean includeElement)
     {
-        if (element == null)
+        if (element == null && putNodeMap)
         {
             // reset the map
             nodeMap = new HashMap<Integer, Node>();
@@ -74,6 +74,11 @@ public class DetailedViewUtil
         }
 
         List<String> resultList = new ArrayList<String>();
+        if (includeElement)
+        {
+            nodeMap.put(0, element);
+            _nodeCount = 1;
+        }
         helperSubElementsRecursive(element, "", putNodeMap, resultList);
         _nodeCount = 0;
         String[] result = new String[resultList.size()];
@@ -147,7 +152,7 @@ public class DetailedViewUtil
      * will result in the following 2D array:
      * new String[][]{ {"a", "b"} , {"c", "d"} , {"e", "f"} , {"g", "h"} }
      */
-    private static String[][] convertListTo2DStringArray(List<String> list)
+    public static String[][] convertListTo2DStringArray(List<String> list)
     {
         String[][] result = new String[(list.size() / 2)][2];
         int rowCount = 0;
@@ -186,6 +191,13 @@ public class DetailedViewUtil
         }
     }
 
+    /**
+     * Strips a String to make it contain letters only
+     * 
+     * @param s
+     *            The String to be stripped to letters
+     * @return s with every non-letter character removed (if there were any to begin with)
+     */
     public static String stripStringToLetters(String s)
     {
         String res = "";
@@ -199,6 +211,25 @@ public class DetailedViewUtil
         }
 
         return res;
+    }
+
+    /**
+     * Checks if child is a direct child of parent
+     * 
+     * @return true, if child is a direct child of parent. If not, returns false
+     */
+    public static boolean isDirectChild(Node child, Node parent)
+    {
+        NodeList children = parent.getChildNodes();
+        for (int c = 0; c < children.getLength(); c++)
+        {
+            if (children.item(c) == child)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -2,13 +2,17 @@ package xmlviewer.ui.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -21,6 +25,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlviewer.tree.util.DetailedViewUtil;
 import xmlviewer.ui.detail.DetailedView;
+import xmlviewer.ui.main.MainWindow;
 
 
 /**
@@ -35,15 +40,17 @@ public class DetailedViewTool
     private JTree _tree;
     private Map<Integer, Node> _nodeMap;
     private int _selectedTableRow;
-    private JFrame _parentFrame;
+    private MainWindow _parentWindow;
+    private Map<String, String[]> _filterMap;
+    private String[] _filteredList;
 
-    public DetailedViewTool(JTree tree, JFrame parent)
+    public DetailedViewTool(JTree tree, MainWindow parent)
     {
         _ui = new DetailedView();
         _tree = tree;
         _nodeMap = new HashMap<Integer, Node>();
         _selectedTableRow = -1;
-        _parentFrame = parent;
+        _parentWindow = parent;
 
         setupListeners();
         fillComboBoxData();
@@ -73,10 +80,12 @@ public class DetailedViewTool
         JComboBox elementComboBox = _ui.getElementComboBox();
         JList subElementList = _ui.getElementChildrenList();
         JTable elementDetailTable = _ui.getElementDetailTable();
+        JCheckBoxMenuItem applyFilter = _parentWindow.getViewerMenu().getViewApplyFilterItem();
 
         addComboBoxListener(elementComboBox);
         addSubElementListListener(subElementList);
         addElementDetailTableListener(elementDetailTable);
+        addApplyFilterListener(applyFilter);
     }
 
     private void addComboBoxListener(final JComboBox comboBox)
@@ -91,27 +100,35 @@ public class DetailedViewTool
                 {
                     _ui.getElementLabel().setText("Meta Info");
                     _ui.getElementNumberLabel().setText("");
+                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(false);
+                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(false);
 
                     // fill the elementTable with data
                     fillTableWithMetaInfoData();
 
                     // reset list data
                     _ui.getElementChildrenList().setListData(new String[0]);
+
+                    _ui.getElementFilterLabel().setText("");
                 }
                 else
                 {
                     _ui.getElementLabel().setText("Element");
                     _ui.getElementNumberLabel().setText(String.valueOf(comboBox.getSelectedIndex()));
+                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(false);
+                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(false);
 
                     // fill the elementList with data
                     Node elementNode = getElementNode((comboBox.getSelectedIndex() - 1));
-                    String[] listData = DetailedViewUtil.getSubElementsListFromTree(elementNode, true);
+                    String[] listData = DetailedViewUtil.getSubElementsListFromTree(elementNode, true, false);
                     _nodeMap = DetailedViewUtil.getNodeMap();
 
                     _ui.getElementChildrenList().setListData(listData);
 
                     // reset table data
                     fillTableWithData(new String[0][0]);
+
+                    _ui.getElementFilterLabel().setText("");
                 }
             }
 
@@ -135,22 +152,9 @@ public class DetailedViewTool
             @Override
             public void valueChanged(ListSelectionEvent event)
             {
-                if (list.getSelectedValue() != null)
-                {
-                    int nodeCount = list.getSelectedIndex();
-                    Node selectedElement = _nodeMap.get(nodeCount);
-                    String[][] tableData = DetailedViewUtil.getDetailsForSubElement(selectedElement);
-
-                    fillTableWithData(tableData);
-                }
-                else
-                {
-                    if (_ui.getElementComboBox().getSelectedIndex() > 0)
-                    {
-                        fillTableWithData(new String[0][0]);
-                    }
-                }
+                displayTable(list);
             }
+
         });
 
         list.addMouseListener(new MouseAdapter()
@@ -237,6 +241,36 @@ public class DetailedViewTool
         });
     }
 
+    private void addApplyFilterListener(final JCheckBoxMenuItem checkBox)
+    {
+        checkBox.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent event)
+            {
+                // display the whole unfiltered list
+                if (!checkBox.isSelected())
+                {
+                    Node elementNode = getElementNode((_ui.getElementComboBox().getSelectedIndex() - 1));
+                    String[] listData = DetailedViewUtil.getSubElementsListFromTree(elementNode, true, false);
+                    _nodeMap = DetailedViewUtil.getNodeMap();
+
+                    _ui.getElementFilterLabel().setText("");
+                    _ui.getElementChildrenList().setListData(listData);
+
+                    // reset table data
+                    fillTableWithData(new String[0][0]);
+                }
+                // display the filtered list
+                else
+                {
+                    _ui.getElementFilterLabel().setText("(filtered)");
+                    _ui.getElementChildrenList().setListData(_filteredList);
+                }
+            }
+        });
+    }
+
     private void fillTableWithData(String[][] data)
     {
         @SuppressWarnings("serial")
@@ -294,6 +328,71 @@ public class DetailedViewTool
 
     }
 
+    private void displayTable(JList list)
+    {
+        // filter is not active
+        if (!_parentWindow.getViewerMenu().getViewApplyFilterItem().isSelected())
+        {
+            if (list.getSelectedValue() != null)
+            {
+                int nodePosition = list.getSelectedIndex();
+                Node selectedElement = _nodeMap.get(nodePosition);
+                String[][] tableData = DetailedViewUtil.getDetailsForSubElement(selectedElement);
+                fillTableWithData(tableData);
+            }
+            else
+            {
+                if (_ui.getElementComboBox().getSelectedIndex() > 0)
+                {
+                    fillTableWithData(new String[0][0]);
+                }
+            }
+        }
+        // filter is active
+        else
+        {
+            if (list.getSelectedValue() != null)
+            {
+                int nodePosition = list.getSelectedIndex();
+                Node selectedElement = _nodeMap.get(nodePosition);
+                String[][] tableData = DetailedViewUtil.getDetailsForSubElement(selectedElement);
+
+                // parent attributes are not filtered
+                if (nodePosition == 0)
+                {
+                    fillTableWithData(tableData);
+                }
+                // direct children of the parent element are not filtered
+                else if (DetailedViewUtil.isDirectChild(selectedElement, _nodeMap.get(0)))
+                {
+                    fillTableWithData(tableData);
+                }
+                else
+                {
+                    String[] filter = _filterMap.get(selectedElement.getNodeName());
+                    // treat elements ("el") the same way as their parents
+                    if (filter == null)
+                    {
+                        filter = _filterMap.get(selectedElement.getParentNode().getNodeName());
+                    }
+                    // apply the filter
+                    if (filter != null)
+                    {
+                        String[][] filteredData =
+                            makeIntersection(tableData, filter);
+                        fillTableWithData(filteredData);
+                    }
+                    // selected element has not been selected for filtering
+                    // (the user did not check the checkBox for this element in the filter dialog)
+                    else
+                    {
+                        fillTableWithData(tableData);
+                    }
+                }
+            }
+        }
+    }
+
     private JPopupMenu createFilterChildrenPopup(final Node parentNode)
     {
         JPopupMenu popup = new JPopupMenu();
@@ -305,22 +404,55 @@ public class DetailedViewTool
             public void actionPerformed(ActionEvent event)
             {
                 FilterChildrenTool filterTool =
-                    new FilterChildrenTool(parentNode, _ui.getElementChildrenList().getSelectedIndex(), _parentFrame);
-                String[] result = filterTool.showUI();
+                    new FilterChildrenTool(parentNode, _ui.getElementChildrenList().getSelectedIndex(),
+                        _parentWindow.getFrame());
+                _filterMap = filterTool.showUI();
 
-                // TODO: Ergebnis des FilterTools verarbeiten
-
-                if (result != null)
+                if (_filterMap != null)
                 {
-                    for (String string : result) {
-                        System.out.println(string);
+                    String[] children = DetailedViewUtil.getSubElementsListFromTree(parentNode, true, true);
+                    List<String> display = new ArrayList<String>();
+                    display.add(parentNode.getNodeName());
+                    for (int c = 0; c < children.length; c++)
+                    {
+                        display.add(children[c]);
                     }
 
+                    _filteredList = display.toArray(new String[display.size()]);
+
+                    _ui.getElementChildrenList().setListData(_filteredList);
+                    fillTableWithData(new String[0][0]);
+
+                    _ui.getElementFilterLabel().setText("(filtered)");
+
+                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(true);
+                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(true);
                 }
             }
         });
 
         popup.add(filterButton);
         return popup;
+    }
+
+    private String[][] makeIntersection(String[][] fullData, String[] filter)
+    {
+        List<String> resultList = new ArrayList<String>();
+        for (int i = 0; i < fullData.length; i++)
+        {
+            for (int c = 0; c < filter.length; c++)
+            {
+                if (fullData[i][0].equals(filter[c]))
+                {
+                    resultList.add(fullData[i][0]);
+                    resultList.add(fullData[i][1]);
+                }
+            }
+
+        }
+
+        String[][] result = DetailedViewUtil.convertListTo2DStringArray(resultList);
+
+        return result;
     }
 }

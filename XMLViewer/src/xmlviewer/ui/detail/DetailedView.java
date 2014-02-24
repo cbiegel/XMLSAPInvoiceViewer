@@ -27,6 +27,7 @@ public class DetailedView extends JPanel {
     private final JComboBox _elementComboBox;
     private final JList _elementChildrenList;
     private JLabel _elementLabel;
+    private JLabel _elementFilterLabel;
 
     /**
      * Create the panel.
@@ -41,25 +42,29 @@ public class DetailedView extends JPanel {
 
         _elementNumberLabel = new JLabel("1");
         _elementNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+        _elementFilterLabel = new JLabel("");
+        _elementFilterLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         GroupLayout gl_elementLabelPanel = new GroupLayout(elementLabelPanel);
         gl_elementLabelPanel.setHorizontalGroup(
                 gl_elementLabelPanel.createParallelGroup(Alignment.LEADING)
-                        .addGap(0, 180, Short.MAX_VALUE)
                         .addGroup(gl_elementLabelPanel.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(_elementLabel, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(ComponentPlacement.UNRELATED)
                                 .addComponent(_elementNumberLabel, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(67, Short.MAX_VALUE))
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(_elementFilterLabel, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 );
         gl_elementLabelPanel.setVerticalGroup(
                 gl_elementLabelPanel.createParallelGroup(Alignment.LEADING)
-                        .addGap(0, 51, Short.MAX_VALUE)
                         .addGroup(gl_elementLabelPanel.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(gl_elementLabelPanel.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(_elementLabel, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                                        .addComponent(_elementNumberLabel))
+                                        .addComponent(_elementNumberLabel)
+                                        .addComponent(_elementFilterLabel, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
                                 .addContainerGap())
                 );
         elementLabelPanel.setLayout(gl_elementLabelPanel);
@@ -210,6 +215,10 @@ public class DetailedView extends JPanel {
     public JLabel getElementLabel()
     {
         return _elementLabel;
+    }
+
+    public JLabel getElementFilterLabel() {
+        return _elementFilterLabel;
     }
 
     protected class NoBorderTableCellRenderer extends DefaultTableCellRenderer

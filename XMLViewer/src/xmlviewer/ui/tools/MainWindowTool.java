@@ -251,7 +251,7 @@ public class MainWindowTool {
                     // save the current tree's state
                     saveTreeExpansionState();
 
-                    DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree(), _ui.getFrame());
+                    DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree(), _ui);
                     _ui.initializeAndDisplayDetailedView(detailViewTool.getUI());
 
                     _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(false);
