@@ -128,6 +128,11 @@ public class DetailedViewUtil
      */
     public static String[][] getDetailsForSubElement(Node element)
     {
+        if (element == null)
+        {
+            return new String[0][0];
+        }
+
         NodeList children = element.getChildNodes();
         List<String> resultList = new ArrayList<String>();
 
@@ -192,19 +197,19 @@ public class DetailedViewUtil
     }
 
     /**
-     * Strips a String to make it contain letters only
+     * Strips a String to make it contain letters and numbers only
      * 
      * @param s
-     *            The String to be stripped to letters
-     * @return s with every non-letter character removed (if there were any to begin with)
+     *            The String to be stripped to letters and numbers
+     * @return s with every non-letter and non-number character removed (if there were any to begin with)
      */
-    public static String stripStringToLetters(String s)
+    public static String stripStringToLettersAndNumbers(String s)
     {
         String res = "";
 
         for (int c = 0; c < s.length(); c++)
         {
-            if (Character.isLetter(s.charAt(c)))
+            if (Character.isLetter(s.charAt(c)) || Character.isDigit(s.charAt(c)))
             {
                 res += s.charAt(c);
             }

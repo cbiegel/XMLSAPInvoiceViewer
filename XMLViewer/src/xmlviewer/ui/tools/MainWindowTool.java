@@ -1,5 +1,7 @@
 package xmlviewer.ui.tools;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -18,6 +20,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import xmlviewer.tree.XMLTreeExpansionState;
 import xmlviewer.tree.util.XMLTreeUtil;
+import xmlviewer.ui.detail.DetailedView;
 import xmlviewer.ui.main.MainWindow;
 import xmlviewer.ui.main.XMLViewerFileChooser;
 
@@ -254,6 +257,9 @@ public class MainWindowTool {
                     DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree(), _ui);
                     _ui.initializeAndDisplayDetailedView(detailViewTool.getUI());
 
+                    // adjust the main frame
+                    adjustFrameToDetailedView();
+
                     _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(false);
                     _ui.getViewerMenu().getViewExpandAllItem().setEnabled(false);
                     _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(false);
@@ -410,6 +416,39 @@ public class MainWindowTool {
     {
         int indexOfLastSlash = pathName.lastIndexOf("\\");
         return pathName.substring(indexOfLastSlash + 1);
+    }
+
+    private void adjustFrameToDetailedView()
+    {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (dim.width / 2) - (DetailedView.DETAILED_VIEW_DEFAULT_WIDTH / 2);
+        int y = (dim.height / 2) - (DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT / 2);
+
+        if (_ui.getFrame().getWidth() < DetailedView.DETAILED_VIEW_DEFAULT_WIDTH
+            && _ui.getFrame().getHeight() < DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT)
+        {
+            _ui.getFrame().setBounds(
+                x,
+                y,
+                DetailedView.DETAILED_VIEW_DEFAULT_WIDTH,
+                DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT);
+        }
+        else if (_ui.getFrame().getWidth() < DetailedView.DETAILED_VIEW_DEFAULT_WIDTH)
+        {
+            _ui.getFrame().setBounds(
+                x,
+                y,
+                DetailedView.DETAILED_VIEW_DEFAULT_WIDTH,
+                _ui.getFrame().getHeight());
+        }
+        else if (_ui.getFrame().getWidth() < DetailedView.DETAILED_VIEW_DEFAULT_WIDTH)
+        {
+            _ui.getFrame().setBounds(
+                x,
+                y,
+                _ui.getFrame().getWidth(),
+                DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT);
+        }
     }
 
     /**

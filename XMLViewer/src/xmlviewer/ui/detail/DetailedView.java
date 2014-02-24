@@ -22,6 +22,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 @SuppressWarnings("serial")
 public class DetailedView extends JPanel {
+
+    public static final int DETAILED_VIEW_DEFAULT_WIDTH = 1000;
+    public static final int DETAILED_VIEW_DEFAULT_HEIGHT = 620;
+
     private final JTable _detailTable;
     private final JLabel _elementNumberLabel;
     private final JComboBox _elementComboBox;

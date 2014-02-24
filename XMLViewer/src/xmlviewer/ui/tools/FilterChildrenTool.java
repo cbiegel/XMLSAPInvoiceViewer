@@ -41,14 +41,17 @@ public class FilterChildrenTool
 
     private void initializeUI()
     {
-        _ui.getUIParentNameLabel().setText(_parentNode.getNodeName());
+        if (_parentNode != null)
+        {
+            _ui.getUIParentNameLabel().setText(_parentNode.getNodeName());
+        }
 
         String[] children = DetailedViewUtil.getSubElementsListFromTree(_parentNode, false, false);
         String[] trimmedData = new String[children.length];
 
         for (int c = 0; c < children.length; c++)
         {
-            String trimmedString = DetailedViewUtil.stripStringToLetters(children[c]);
+            String trimmedString = DetailedViewUtil.stripStringToLettersAndNumbers(children[c]);
             trimmedData[c] = trimmedString;
         }
 
@@ -271,7 +274,8 @@ public class FilterChildrenTool
 
         for (int c = 0; c < childNodes.length; c++)
         {
-            String formattedChildName = DetailedViewUtil.formatChildName(DetailedViewUtil.stripStringToLetters(childNodes[c]));
+            String formattedChildName =
+                DetailedViewUtil.formatChildName(DetailedViewUtil.stripStringToLettersAndNumbers(childNodes[c]));
             String formattedElementName = DetailedViewUtil.formatChildName(elementName);
 
             if (formattedChildName.equals(formattedElementName))
@@ -297,7 +301,8 @@ public class FilterChildrenTool
 
         for (int c = 0; c < childNodes.length; c++)
         {
-            String formattedChildName = DetailedViewUtil.formatChildName(DetailedViewUtil.stripStringToLetters(childNodes[c]));
+            String formattedChildName =
+                DetailedViewUtil.formatChildName(DetailedViewUtil.stripStringToLettersAndNumbers(childNodes[c]));
             String formattedElementName = DetailedViewUtil.formatChildName(elementName);
 
             if (formattedChildName.equals(formattedElementName))

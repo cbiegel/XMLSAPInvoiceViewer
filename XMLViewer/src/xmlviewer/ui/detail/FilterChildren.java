@@ -40,8 +40,8 @@ public class FilterChildren extends JDialog {
 
         int width = 630;
         int height = 380;
-        int x = ((owner.getWidth() / 2) - (width / 2) + owner.getX());
-        int y = ((owner.getHeight() / 2) - (height / 2) + owner.getY());
+        int x = (owner == null) ? 0 : ((owner.getWidth() / 2) - (width / 2) + owner.getX());
+        int y = (owner == null) ? 0 : ((owner.getHeight() / 2) - (height / 2) + owner.getY());
 
         setBounds(x, y, width, height);
         getContentPane().setLayout(new BorderLayout());

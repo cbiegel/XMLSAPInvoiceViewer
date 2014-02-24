@@ -194,7 +194,7 @@ public class DetailedViewTool
 
             private boolean isInvoiceItemOrPriceExternal(Node node)
             {
-                String strippedName = DetailedViewUtil.stripStringToLetters(node.getNodeName());
+                String strippedName = DetailedViewUtil.stripStringToLettersAndNumbers(node.getNodeName());
                 return (strippedName.equals("mSapInvoiceItems") || strippedName.equals("mSapInvoiceItemRevenueDatas"));
             }
         });
