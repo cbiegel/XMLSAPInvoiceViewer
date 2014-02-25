@@ -21,6 +21,10 @@ import xmlviewer.ui.CustomCheckBox;
 import xmlviewer.ui.detail.FilterChildren;
 
 
+/**
+ * @author cbiegel
+ *         This class serves as the tool component for the FilterChildren component
+ */
 public class FilterChildrenTool
 {
     private FilterChildren _ui;

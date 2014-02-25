@@ -3,6 +3,7 @@ package xmlviewer.ui;
 import javax.swing.JCheckBox;
 
 
+@SuppressWarnings("serial")
 public class CustomCheckBox extends JCheckBox
 {
     private boolean isHeader;

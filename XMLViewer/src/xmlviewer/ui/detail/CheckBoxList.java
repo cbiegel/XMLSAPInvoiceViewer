@@ -19,6 +19,10 @@ import javax.swing.border.EmptyBorder;
 import xmlviewer.ui.CustomCheckBox;
 
 
+/**
+ * @author cbiegel
+ *         This class represents a List of CustomCheckBoxes.
+ */
 @SuppressWarnings("serial")
 public class CheckBoxList extends JList
 {

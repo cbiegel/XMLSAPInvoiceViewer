@@ -410,23 +410,26 @@ public class DetailedViewTool
 
                 if (_filterMap != null)
                 {
-                    String[] children = DetailedViewUtil.getSubElementsListFromTree(parentNode, true, true);
-                    List<String> display = new ArrayList<String>();
-                    display.add(parentNode.getNodeName());
-                    for (int c = 0; c < children.length; c++)
+                    if (!_filterMap.isEmpty())
                     {
-                        display.add(children[c]);
+                        String[] children = DetailedViewUtil.getSubElementsListFromTree(parentNode, true, true);
+                        List<String> display = new ArrayList<String>();
+                        display.add(parentNode.getNodeName());
+                        for (int c = 0; c < children.length; c++)
+                        {
+                            display.add(children[c]);
+                        }
+
+                        _filteredList = display.toArray(new String[display.size()]);
+
+                        _ui.getElementChildrenList().setListData(_filteredList);
+                        fillTableWithData(new String[0][0]);
+
+                        _ui.getElementFilterLabel().setText("(filtered)");
+
+                        _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(true);
+                        _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(true);
                     }
-
-                    _filteredList = display.toArray(new String[display.size()]);
-
-                    _ui.getElementChildrenList().setListData(_filteredList);
-                    fillTableWithData(new String[0][0]);
-
-                    _ui.getElementFilterLabel().setText("(filtered)");
-
-                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(true);
-                    _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(true);
                 }
             }
         });
