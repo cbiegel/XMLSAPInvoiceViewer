@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.scandlines.coast.common.payment.TsSapInvoiceListExternal xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<mAllowedOperations>0</mAllowedOperations>
+  <mSapPaymentExportSequenceNumber>152997</mSapPaymentExportSequenceNumber>
+  <mTotalNumberOfCashBooks>1</mTotalNumberOfCashBooks>
+  <tsSapInvoiceExternals>
+    <el>
+      <mAllowedOperations>0</mAllowedOperations>
+      <mCashBookHeader>
+        <mOid xsi:nil="true"/>
+        <mVersion xsi:nil="true"/>
+        <mAllowedOperations>0</mAllowedOperations>
+        <mClient>Central (SAD)</mClient>
+        <mLocation>Central (SAD)</mLocation>
+        <mShift>SAD_aschepull_CE02987_26.09.2013 13:04:30</mShift>
+        <mCashier>SAD_aschepull</mCashier>
+        <mStartDate>20130926</mStartDate>
+        <mStartTime>1304</mStartTime>
+        <mEndDate>20130926</mEndDate>
+        <mEndTime>1314</mEndTime>
+        <mMandatorCode>SAD</mMandatorCode>
+        <mSapPaymentExportSequenceNumber>152997</mSapPaymentExportSequenceNumber>
+        <mTotalNumberOfCashBooks>1</mTotalNumberOfCashBooks>
+        <mTotalNumberOfPayments>8</mTotalNumberOfPayments>
+        <mTotalTurnoverCheckSum>69950</mTotalTurnoverCheckSum>
+      </mCashBookHeader>
+      <mHeaders>
+        <el>
+          <mAllowedOperations>0</mAllowedOperations>
+          <mInvoiceHeader>
+            <mOid xsi:nil="true"/>
+            <mVersion xsi:nil="true"/>
+            <mAllowedOperations>0</mAllowedOperations>
+            <mServiceId>0100695304</mServiceId>
+            <mRouteId xsi:nil="true"/>
+            <mRouteText xsi:nil="true"/>
+            <mDebtorId>0000170333</mDebtorId>
+            <mProjectNumber xsi:nil="true"/>
+            <mReferenceNumber xsi:nil="true"/>
+            <mDepositAmount xsi:nil="true"/>
+            <mDepositCurrencyCode xsi:nil="true"/>
+            <mNetPriceAmount>9400</mNetPriceAmount>
+            <mNetPriceCurrencyCode>EUR</mNetPriceCurrencyCode>
+            <mTaxAmount>0</mTaxAmount>
+            <mTaxCurrencyCode>EUR</mTaxCurrencyCode>
+            <mLocationOfPayment>Central (SAD)</mLocationOfPayment>
+            <mMandatorOfPayment>SAD</mMandatorOfPayment>
+            <mTransferSeparately xsi:nil="true"/>
+            <mServiceVersionId>1</mServiceVersionId>
+            <mMarketType>Passenger</mMarketType>
+            <mIsCancellation>false</mIsCancellation>
+            <mIsInternetPayment>false</mIsInternetPayment>
+            <mIsCardPayment>false</mIsCardPayment>
+            <mIsInvoice>false</mIsInvoice>
+            <mTaxClassification>1</mTaxClassification>
+            <mLeadPax>ssc</mLeadPax>
+            <mSubContractor>ssc</mSubContractor>
+            <mPaymentCounter>1</mPaymentCounter>
+            <mSapPostingDate>20130926</mSapPostingDate>
+            <mPaymentDate>20130926</mPaymentDate>
+            <mPaymentTime>1305</mPaymentTime>
+            <mTurnover>9400</mTurnover>
+            <mTurnoverChecksumMD5>c8f4ca7b63b9411b8b69e19a127d240f</mTurnoverChecksumMD5>
+            <mAdditionalBonusID xsi:nil="true"/>
+            <mCalculationDate xsi:nil="true"/>
+            <mCalculationDateRangeBegin xsi:nil="true"/>
+            <mCalculationDateRangeEnd xsi:nil="true"/>
+            <mConfirmationDate xsi:nil="true"/>
+            <mConfirmationUser xsi:nil="true"/>
+            <mPostingDate xsi:nil="true"/>
+            <mAdditionalBonusPricingType xsi:nil="true"/>
+            <mAdditionalBonusRebateAmount xsi:nil="true"/>
+            <mAdditionalBonusRebateCurrencyCode xsi:nil="true"/>
+            <mAdditionalBonusRebateQuota xsi:nil="true"/>
+            <mIsBonus>false</mIsBonus>
+            <mTicketNo/>
+            <mIsInhousePayment>false</mIsInhousePayment>
+            <mIsInternetRefound>false</mIsInternetRefound>
+          </mInvoiceHeader>
+		  <mSapInvoiceItems>
+            <el>
+              <mAllowedOperations>0</mAllowedOperations>
+              <mSapInvoiceItem>
+                <mOid xsi:nil="true"/>
+                <mVersion xsi:nil="true"/>
+                <mAllowedOperations>0</mAllowedOperations>
+                <mDocumentPosition>10</mDocumentPosition>
+                <mProductCode>FS3</mProductCode>
+                <mRouteId xsi:nil="true"/>
+                <mRouteText xsi:nil="true"/>
+                <mTariffConditionId>STD</mTariffConditionId>
+                <mTariffId>GFGGSADT</mTariffId>
+                <mProductId>fee_undefined</mProductId>
+                <mVehicleTypeId xsi:nil="true"/>
+                <mNumberOfUnits>1</mNumberOfUnits>
+                <mDistributionChannel>BC</mDistributionChannel>
+                <mNetPriceAmount>11.0</mNetPriceAmount>
+                <mNetPriceCurrency>EUR</mNetPriceCurrency>
+                <mTaxType>0_no tax</mTaxType>
+                <mTaxAmount>0.0</mTaxAmount>
+                <mTaxCurrency>EUR</mTaxCurrency>
+                <mLocalNetPriceAmount xsi:nil="true"/>
+                <mLocalNetPriceCurrency xsi:nil="true"/>
+                <mLocalTaxType/>
+                <mLocalTaxAmount xsi:nil="true"/>
+                <mLocalTaxCurrency xsi:nil="true"/>
+                <mDateOfOrdering>19000101</mDateOfOrdering>
+                <mTimeOfOrdering>0000</mTimeOfOrdering>
+                <mDateOfCancelation/>
+                <mTimeOfCancelation/>
+                <mLocationOfOrdering>CENTRAL (SAD)</mLocationOfOrdering>
+                <mShareOfTotalTariffPrice>1.000000000000</mShareOfTotalTariffPrice>
+                <mTariffName>PR-3759 SAD Test Fee Initial Booking</mTariffName>
+                <mProductName>PR-3759 SAD Test Fee Initial Booking</mProductName>
+                <mContributedGrossTurnoverAmount xsi:nil="true"/>
+                <mContributedGrossTurnoverCurrencyCode xsi:nil="true"/>
+                <mContributedLength xsi:nil="true"/>
+                <mContributedNetTurnoverAmount xsi:nil="true"/>
+                <mContributedNetTurnoverCurrencyCode xsi:nil="true"/>
+                <mContributedUnits xsi:nil="true"/>
+                <mContributedVolume xsi:nil="true"/>
+                <mContributedWeight xsi:nil="true"/>
+                <mDescription xsi:nil="true"/>
+                <mTaxBonusAmount xsi:nil="true"/>
+                <mTaxBonusCurrencyCode xsi:nil="true"/>
+              </mSapInvoiceItem>
+              <mSapInvoicePriceModifications/>
+              <mSapInvoicePriceExternals>
+                <el>
+                  <mOid xsi:nil="true"/>
+                  <mVersion xsi:nil="true"/>
+                  <mAllowedOperations>0</mAllowedOperations>
+                  <mAmount>11.0</mAmount>
+                  <mIdentifier>PB00</mIdentifier>
+                  <mCurrencyCode>EUR</mCurrencyCode>
+                </el>
+                <el>
+                  <mOid xsi:nil="true"/>
+                  <mVersion xsi:nil="true"/>
+                  <mAllowedOperations>0</mAllowedOperations>
+                  <mAmount>0.0</mAmount>
+                  <mIdentifier>ZMW1</mIdentifier>
+                  <mCurrencyCode>EUR</mCurrencyCode>
+                </el>
+              </mSapInvoicePriceExternals>
+            </el>
+        </mSapInvoiceItems>
+		</el>
+		</mHeaders>
+		</el>
+		</tsSapInvoiceExternals>
+</com.scandlines.coast.common.payment.TsSapInvoiceListExternal>
