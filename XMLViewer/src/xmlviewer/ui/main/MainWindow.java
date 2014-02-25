@@ -124,7 +124,6 @@ public class MainWindow {
 
     public void updateTreeExpansionState(String expansionState)
     {
-        System.out.println("updateTreeExpansionState:\t" + expansionState);
         XMLTreeUtil.loadTreeExpansionState(_tree, expansionState, 0);
     }
 

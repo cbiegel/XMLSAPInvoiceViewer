@@ -459,4 +459,20 @@ public class MainWindowTool {
         _ui.getFrame().dispose();
     }
 
+    public MainWindow getUI()
+    {
+        return _ui;
+    }
+
+    /**
+     * THIS METHOD SERVES FOR TESTING PURPOSES ONLY. YOU SHOULD NOT CALL THIS METHOD IN REGULAR DEVLOPMENT
+     * 
+     * @param path
+     *            Set the _currentFilePath to path
+     */
+    public void setCurrentFilePath(String path)
+    {
+        _currentFilePath = path;
+    }
+
 }

@@ -51,6 +51,7 @@ public class DetailedViewTool
         _nodeMap = new HashMap<Integer, Node>();
         _selectedTableRow = -1;
         _parentWindow = parent;
+        _filteredList = new String[0];
 
         setupListeners();
         fillComboBoxData();

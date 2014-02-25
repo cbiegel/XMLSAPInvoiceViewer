@@ -27,9 +27,12 @@ import xmlviewer.ui.CustomCheckBox;
 public class CheckBoxList extends JList
 {
     protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+    private int _size;
 
     public CheckBoxList()
     {
+        _size = 0;
+
         setCellRenderer(new CellRenderer());
 
         addMouseListener(new MouseAdapter()
@@ -103,7 +106,7 @@ public class CheckBoxList extends JList
     {
         CustomCheckBox[] currentCheckBoxes = getAllCheckBoxes();
         CustomCheckBox[] newCheckBoxes = new CustomCheckBox[currentCheckBoxes.length + 1];
-        int containsPos = containsCheckAtPositionBox(currentCheckBoxes, checkBox);
+        int containsPos = containsCheckBoxAtPosition(currentCheckBoxes, checkBox);
 
         // only add checkBox if it is not in the current list already
         if (containsPos == -1)
@@ -115,6 +118,7 @@ public class CheckBoxList extends JList
 
             newCheckBoxes[newCheckBoxes.length - 1] = checkBox;
             setListData(newCheckBoxes);
+            _size = newCheckBoxes.length;
         }
     }
 
@@ -127,7 +131,7 @@ public class CheckBoxList extends JList
     public void removeCheckBox(CustomCheckBox checkBox)
     {
         CustomCheckBox[] currentCheckBoxes = getAllCheckBoxes();
-        int containsPosition = containsCheckAtPositionBox(currentCheckBoxes, checkBox);
+        int containsPosition = containsCheckBoxAtPosition(currentCheckBoxes, checkBox);
 
         if (containsPosition != -1)
         {
@@ -142,6 +146,7 @@ public class CheckBoxList extends JList
                 newData[c] = currentCheckBoxes[c + 1];
             }
             setListData(newData);
+            _size = newData.length;
         }
     }
 
@@ -150,7 +155,7 @@ public class CheckBoxList extends JList
      * checkBox.
      * If it does not contain checkBox, returns -1.
      */
-    private int containsCheckAtPositionBox(CustomCheckBox[] checkBoxSet, CustomCheckBox checkBox)
+    private int containsCheckBoxAtPosition(CustomCheckBox[] checkBoxSet, CustomCheckBox checkBox)
     {
         // check if currentCheckBoxes contains checkBox
         for (int c = 0; c < checkBoxSet.length; c++)
@@ -197,7 +202,59 @@ public class CheckBoxList extends JList
     }
 
     /**
-     * Collects every selected attribute (their check box is marked as selected) of a parent to an array
+     * Returns a CustomCheckBox at the position index of the list.
+     * If the index does not exist, returns null.
+     */
+    public CustomCheckBox getCheckBoxAtPosition(int index)
+    {
+        ListModel model = getModel();
+
+        // prevent an ArrayIndexOutOfBoundsException for the model
+        if (model.getSize() == 0)
+        {
+            return null;
+        }
+
+        // model is empty (holds no objects)
+        if (model.getElementAt(0).toString().equals("No Data Model"))
+        {
+            return null;
+        }
+        else
+        {
+            return (CustomCheckBox) model.getElementAt(index);
+        }
+    }
+
+    /**
+     * @return True, if this list contains cb. If not, returns false.
+     */
+    public boolean containsCheckBox(CustomCheckBox cb)
+    {
+        CustomCheckBox[] allCheckBoxes = getAllCheckBoxes();
+
+        for (CustomCheckBox checkBox : allCheckBoxes)
+        {
+            if (checkBox == cb)
+            {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    /**
+     * @return The size of this CheckBoxList (the amount of elements in this list)
+     */
+    public int getListSize()
+    {
+        return _size;
+    }
+
+    /**
+     * Collects every selected attribute (their check box is marked as selected) of a parent in an array
      * 
      * @return Every selected attribute of parent in a CustomCheckBox[]
      */

@@ -36,4 +36,21 @@ public class DetailedViewToolTest {
         DetailedView ui = tool.getUI();
     }
 
+    // The following tests don't test functionality but rather serve the purpose of catching errors that might occur
+    // when the user uses the UI
+
+    @Test
+    public void testListenersNoError()
+    {
+        MainWindow window = new MainWindow(0, 0, 0, 0, false, false);
+        DetailedViewTool tool = new DetailedViewTool(_tree, window);
+        DetailedView ui = tool.getUI();
+
+        ui.getElementComboBox().setSelectedIndex(1);
+        ui.getElementChildrenList().setSelectedIndex(1);
+        // activate and deactivate the filter
+        window.getViewerMenu().getViewApplyFilterItem().setEnabled(true);
+        window.getViewerMenu().getViewApplyFilterItem().setSelected(true);
+        window.getViewerMenu().getViewApplyFilterItem().setSelected(false);
+    }
 }
