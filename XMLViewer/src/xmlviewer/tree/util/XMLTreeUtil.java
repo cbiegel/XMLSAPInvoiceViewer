@@ -17,7 +17,9 @@ import xmlviewer.tree.XMLTreeExpansionState;
 
 public class XMLTreeUtil
 {
-    private static final String TREE_EXPANSION_PATH = ".\\expansionStates";
+    private static final String APPDATA_PATH = System.getenv("APPDATA");
+
+    private static final String TREE_EXPANSION_PATH = APPDATA_PATH + "\\XMLViewer\\expansionStates";
 
     private static final String TREE_EXPANSION_FILE = TREE_EXPANSION_PATH + "\\treeExp-";
 
@@ -128,12 +130,11 @@ public class XMLTreeUtil
 
             if (!f.exists())
             {
-                f.mkdir();
+                f.mkdirs();
             }
             if (!f.exists())
             {
-                File test = new File(".\\");
-                JOptionPane.showMessageDialog(null, "Warning: No write permissions for: \n" + test.getAbsolutePath(),
+                JOptionPane.showMessageDialog(null, "Warning: No write permissions for: \n" + f.getAbsolutePath(),
                     "Error saving tree state", JOptionPane.WARNING_MESSAGE);
                 return;
             }
