@@ -449,14 +449,20 @@ public class MainWindowTool {
         }
         else if (_ui.getFrame().getWidth() < DetailedView.DETAILED_VIEW_DEFAULT_WIDTH)
         {
+            int displayHeightHalf = (dim.height / 2);
+            int frameHeightHalf = (_ui.getFrame().getHeight() / 2);
+            y = displayHeightHalf - frameHeightHalf;
+
             _ui.getFrame().setBounds(
                 x,
                 y,
                 DetailedView.DETAILED_VIEW_DEFAULT_WIDTH,
                 _ui.getFrame().getHeight());
         }
-        else if (_ui.getFrame().getWidth() < DetailedView.DETAILED_VIEW_DEFAULT_WIDTH)
+        else if (_ui.getFrame().getHeight() < DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT)
         {
+            x = (dim.width / 2) - (_ui.getFrame().getWidth() / 2);
+
             _ui.getFrame().setBounds(
                 x,
                 y,
