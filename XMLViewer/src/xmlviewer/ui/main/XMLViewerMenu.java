@@ -22,6 +22,7 @@ public class XMLViewerMenu {
     private final JMenu _settings;
     private final JMenu _view;
     private final JMenuItem _open;
+    private final JMenuItem _exit;
     private final JCheckBoxMenuItem _settingsSaveWindowLocation;
     private final JCheckBoxMenuItem _settingsSaveTreeState;
     private final JMenuItem _viewSwitchViews;
@@ -42,6 +43,9 @@ public class XMLViewerMenu {
 
         _open = new JMenuItem("Open...");
         _open.setName("open");
+
+        _exit = new JMenuItem("Exit");
+        _exit.setName("exit");
 
         _settingsSaveWindowLocation = new JCheckBoxMenuItem("Save window location on close");
         _settingsSaveWindowLocation.setName("saveWindowLocation");
@@ -77,6 +81,7 @@ public class XMLViewerMenu {
         _file.setMnemonic(KeyEvent.VK_F);
 
         _open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
+        _exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
         _settingsSaveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.ALT_MASK));
         _settingsSaveTreeState.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
         _viewSwitchViews.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
@@ -85,6 +90,8 @@ public class XMLViewerMenu {
         _viewApplyFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
 
         _file.add(_open);
+        _file.add(new JSeparator());
+        _file.add(_exit);
 
         _settings.add(_settingsSaveTreeState);
         _settings.add(_settingsSaveWindowLocation);
@@ -156,6 +163,11 @@ public class XMLViewerMenu {
     public JCheckBoxMenuItem getViewApplyFilterItem()
     {
         return _viewApplyFilter;
+    }
+
+    public JMenuItem getExitItem()
+    {
+        return _exit;
     }
 
 }

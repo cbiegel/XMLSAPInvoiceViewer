@@ -71,6 +71,7 @@ public class MainWindowTool {
     private void setupListeners()
     {
         JMenuItem openItem = _ui.getViewerMenu().getOpenItem();
+        JMenuItem exitItem = _ui.getViewerMenu().getExitItem();
         JFrame frame = _ui.getFrame();
         JCheckBoxMenuItem saveWindowLocationCheck = _ui.getViewerMenu().getSettingsSaveWindowLocationItem();
         JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSettingsSaveTreeStateItem();
@@ -79,6 +80,7 @@ public class MainWindowTool {
         JMenuItem switchViews = _ui.getViewerMenu().getViewSwitchViewsItem();
 
         addOpenItemListener(openItem);
+        addExitItemListener(exitItem);
         addWindowListener(frame);
         addWindowLocationCheckListener(saveWindowLocationCheck);
         addSaveTreeStateListener(saveTreeState);
@@ -150,6 +152,18 @@ public class MainWindowTool {
                 } catch (SAXException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    private void addExitItemListener(final JMenuItem item)
+    {
+        item.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                _ui.getFrame().dispose();
             }
         });
     }
