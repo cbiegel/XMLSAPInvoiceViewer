@@ -32,7 +32,7 @@ public class DetailedView extends JPanel {
     private final JComboBox _elementComboBox;
     private final JList _elementChildrenList;
     private JLabel _elementLabel;
-    private JLabel _elementFilterLabel;
+    private JLabel _elementDetailLabel;
 
     /**
      * Create the panel.
@@ -48,8 +48,8 @@ public class DetailedView extends JPanel {
         _elementNumberLabel = new JLabel("1");
         _elementNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-        _elementFilterLabel = new JLabel("");
-        _elementFilterLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        _elementDetailLabel = new JLabel("");
+        _elementDetailLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         GroupLayout gl_elementLabelPanel = new GroupLayout(elementLabelPanel);
         gl_elementLabelPanel.setHorizontalGroup(
                 gl_elementLabelPanel.createParallelGroup(Alignment.LEADING)
@@ -59,8 +59,8 @@ public class DetailedView extends JPanel {
                                 .addPreferredGap(ComponentPlacement.UNRELATED)
                                 .addComponent(_elementNumberLabel, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(ComponentPlacement.RELATED)
-                                .addComponent(_elementFilterLabel, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(_elementDetailLabel, GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                                .addContainerGap())
                 );
         gl_elementLabelPanel.setVerticalGroup(
                 gl_elementLabelPanel.createParallelGroup(Alignment.LEADING)
@@ -69,7 +69,7 @@ public class DetailedView extends JPanel {
                                 .addGroup(gl_elementLabelPanel.createParallelGroup(Alignment.BASELINE)
                                         .addComponent(_elementLabel, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
                                         .addComponent(_elementNumberLabel)
-                                        .addComponent(_elementFilterLabel, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                                        .addComponent(_elementDetailLabel, GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
                                 .addContainerGap())
                 );
         elementLabelPanel.setLayout(gl_elementLabelPanel);
@@ -114,17 +114,18 @@ public class DetailedView extends JPanel {
                                                             .addComponent(
                                                                 listTableSplitPane,
                                                                 GroupLayout.DEFAULT_SIZE,
-                                                                837,
+                                                                800,
                                                                 Short.MAX_VALUE)
                                                             .addContainerGap())
                                                 .addGroup(
+                                                    Alignment.TRAILING,
                                                     groupLayout.createSequentialGroup()
                                                             .addComponent(
                                                                 elementLabelPanel,
                                                                 GroupLayout.PREFERRED_SIZE,
-                                                                GroupLayout.DEFAULT_SIZE,
+                                                                347,
                                                                 GroupLayout.PREFERRED_SIZE)
-                                                            .addPreferredGap(ComponentPlacement.RELATED, 276, Short.MAX_VALUE)
+                                                            .addPreferredGap(ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
                                                             .addComponent(lblSelectAnSapinvoiceitem)
                                                             .addPreferredGap(ComponentPlacement.RELATED)
                                                             .addComponent(
@@ -140,24 +141,24 @@ public class DetailedView extends JPanel {
                             groupLayout.createSequentialGroup()
                                     .addGroup(
                                         groupLayout.createParallelGroup(Alignment.LEADING)
+                                                .addGroup(groupLayout.createSequentialGroup()
+                                                        .addGap(28)
+                                                        .addComponent(lblSelectAnSapinvoiceitem))
                                                 .addGroup(
                                                     groupLayout.createSequentialGroup()
                                                             .addContainerGap()
                                                             .addGroup(
                                                                 groupLayout.createParallelGroup(Alignment.LEADING)
                                                                         .addComponent(
-                                                                            elementSelectionPanel,
-                                                                            GroupLayout.PREFERRED_SIZE,
-                                                                            52,
-                                                                            GroupLayout.PREFERRED_SIZE)
-                                                                        .addComponent(
                                                                             elementLabelPanel,
                                                                             GroupLayout.PREFERRED_SIZE,
                                                                             GroupLayout.DEFAULT_SIZE,
-                                                                            GroupLayout.PREFERRED_SIZE)))
-                                                .addGroup(groupLayout.createSequentialGroup()
-                                                        .addGap(28)
-                                                        .addComponent(lblSelectAnSapinvoiceitem)))
+                                                                            GroupLayout.PREFERRED_SIZE)
+                                                                        .addComponent(
+                                                                            elementSelectionPanel,
+                                                                            GroupLayout.PREFERRED_SIZE,
+                                                                            52,
+                                                                            GroupLayout.PREFERRED_SIZE))))
                                     .addGap(18)
                                     .addComponent(listTableSplitPane, GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
                                     .addContainerGap())
@@ -223,8 +224,8 @@ public class DetailedView extends JPanel {
         return _elementLabel;
     }
 
-    public JLabel getElementFilterLabel() {
-        return _elementFilterLabel;
+    public JLabel getElementDetailLabel() {
+        return _elementDetailLabel;
     }
 
     protected class NoBorderTableCellRenderer extends DefaultTableCellRenderer

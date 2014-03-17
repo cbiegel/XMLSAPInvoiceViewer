@@ -26,6 +26,7 @@ import org.w3c.dom.NodeList;
 import xmlviewer.tree.util.DetailedViewUtil;
 import xmlviewer.ui.detail.DetailedView;
 import xmlviewer.ui.main.MainWindow;
+import xmlviewer.ui.main.XMLViewerMenu;
 
 
 /**
@@ -112,7 +113,7 @@ public class DetailedViewTool
                     // reset list data
                     _ui.getElementChildrenList().setListData(new String[0]);
 
-                    _ui.getElementFilterLabel().setText("");
+                    updateElementDetailLabel();
                 }
                 else
                 {
@@ -131,7 +132,7 @@ public class DetailedViewTool
                     // reset table data
                     fillTableWithData(new String[0][0]);
 
-                    _ui.getElementFilterLabel().setText("");
+                    updateElementDetailLabel();
                 }
             }
 
@@ -155,8 +156,6 @@ public class DetailedViewTool
             @Override
             public void valueChanged(ListSelectionEvent event)
             {
-                // TODO: showCompact berücksichtigen
-
                 displayTable(list);
                 JCheckBoxMenuItem showCompact = _parentWindow.getViewerMenu().getViewShowCompactItem();
 
@@ -271,16 +270,17 @@ public class DetailedViewTool
                     String[] listData = DetailedViewUtil.getSubElementsListFromTree(elementNode, true, false);
                     _nodeMap = DetailedViewUtil.getNodeMap();
 
-                    _ui.getElementFilterLabel().setText("");
                     _ui.getElementChildrenList().setListData(listData);
 
                     // reset table data
                     fillTableWithData(new String[0][0]);
+
+                    updateElementDetailLabel();
                 }
                 // display the filtered list
                 else
                 {
-                    _ui.getElementFilterLabel().setText("(filtered)");
+                    updateElementDetailLabel();
                     _ui.getElementChildrenList().setListData(_filteredList);
                 }
             }
@@ -296,15 +296,43 @@ public class DetailedViewTool
             {
                 Node selectedNode = _nodeMap.get(_ui.getElementChildrenList().getSelectedIndex());
                 String[][] originalTableData = DetailedViewUtil.getDetailsForSubElement(selectedNode);
+                JMenuItem filterItem = _parentWindow.getViewerMenu().getViewApplyFilterItem();
 
+                // compact view is active
                 if (checkBox.isSelected())
                 {
-                    String[][] compactTableData = DetailedViewUtil.getCompactAttributes(originalTableData);
+                    String[][] compactTableData = null;
+
+                    // filter is active
+                    if (filterItem.isSelected())
+                    {
+                        String[][] filteredData = DetailedViewUtil.getTableData(_ui.getElementDetailTable());
+                        compactTableData = DetailedViewUtil.getCompactAttributes(filteredData);
+                    }
+                    // filter is not active
+                    else
+                    {
+                        compactTableData = DetailedViewUtil.getCompactAttributes(originalTableData);
+                    }
+
                     fillTableWithData(compactTableData);
+                    updateElementDetailLabel();
                 }
+                // compact view is not active
                 else
                 {
-                    fillTableWithData(originalTableData);
+                    // filter is active
+                    if (filterItem.isSelected())
+                    {
+                        displayTable(_ui.getElementChildrenList());
+                    }
+                    // filter is not active
+                    else
+                    {
+                        fillTableWithData(originalTableData);
+                    }
+
+                    updateElementDetailLabel();
                 }
             }
         });
@@ -497,7 +525,7 @@ public class DetailedViewTool
                         _ui.getElementChildrenList().setListData(_filteredList);
                         fillTableWithData(new String[0][0]);
 
-                        _ui.getElementFilterLabel().setText("(filtered)");
+                        updateElementDetailLabel();
 
                         _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(true);
                         _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(true);
@@ -529,5 +557,27 @@ public class DetailedViewTool
         String[][] result = DetailedViewUtil.convertListTo2DStringArray(resultList);
 
         return result;
+    }
+
+    private void updateElementDetailLabel()
+    {
+        String elementDetailLabel = "";
+        XMLViewerMenu menu = _parentWindow.getViewerMenu();
+
+        if (menu.getViewApplyFilterItem().isSelected())
+        {
+            elementDetailLabel += "(filtered)";
+
+            if (menu.getViewShowCompactItem().isSelected())
+            {
+                elementDetailLabel += " (compact)";
+            }
+        }
+        else if (menu.getViewShowCompactItem().isSelected())
+        {
+            elementDetailLabel += "(compact)";
+        }
+
+        _ui.getElementDetailLabel().setText(elementDetailLabel);
     }
 }

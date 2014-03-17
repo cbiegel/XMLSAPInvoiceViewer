@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.table.TableModel;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -246,6 +248,34 @@ public class DetailedViewUtil
         return nodeMap;
     }
 
+    /**
+     * Returns the content of a table as a String[][].
+     * (requires the table to only consist of Strings)
+     */
+    public static String[][] getTableData(JTable table)
+    {
+        List<String> result = new ArrayList<String>();
+        TableModel model = table.getModel();
+
+        for (int c = 0; c < model.getRowCount(); c++)
+        {
+            result.add(model.getValueAt(c, 0).toString());
+            result.add(model.getValueAt(c, 1).toString());
+        }
+
+        return convertListTo2DStringArray(result);
+    }
+
+    /**
+     * Transforms the given data to a compact modified version by condensing:
+     * Amount & Currency, Time & Date
+     * to one entry in the table.
+     * For instance, {{"priceAmount", "200"}, {"priceCurrency", "EUR"}} will return
+     * {{"priceAmount", "200 EUR"}}.
+     * {{"eventDate", "20140317"}, {"eventTime", "1500"}} will return
+     * {{"eventDateAndTime", "17.03.2014 - 15:00"}}
+     * 
+     */
     public static String[][] getCompactAttributes(String[][] originalData)
     {
         List<String> result = new ArrayList<String>();
@@ -254,6 +284,7 @@ public class DetailedViewUtil
         {
             String attr = originalData[c][0].toLowerCase();
 
+            // currency
             if (attr.endsWith("amount"))
             {
                 String base = attr.substring(0, attr.lastIndexOf("amount"));
@@ -267,17 +298,125 @@ public class DetailedViewUtil
                     if (nextAttr.endsWith("currency") || nextAttr.endsWith("currencycode"))
                     {
                         String compactValue = originalData[c][1] + " " + originalData[c + 1][1];
-                        result.add(base);
+                        result.add(base + "Amount");
                         result.add(compactValue);
                         ++c;
                     }
                 }
+                // last element reached
                 else
                 {
                     result.add(originalData[c][0]);
                     result.add(originalData[c][1]);
                 }
             }
+            // date
+            else if (attr.endsWith("date") || attr.startsWith("date"))
+            {
+                // attribute ends with "date"
+                if (attr.endsWith("date"))
+                {
+                    String base = originalData[c][0].substring(0, attr.lastIndexOf("date"));
+
+                    // prevent array out of bounds
+                    if ((c + 1) < originalData.length)
+                    {
+                        String nextAttr = originalData[c + 1][0].toLowerCase();
+                        // "date"-"time"-match found
+                        if (nextAttr.endsWith("time"))
+                        {
+                            String compactValue = formatDate(originalData[c][1]) +
+                                " - " + formatTime(originalData[c + 1][1]);
+                            result.add(base + "DateAndTime");
+                            result.add(compactValue);
+                            ++c;
+                        }
+                        // just "date", no "time"
+                        else
+                        {
+                            String compactValue = formatDate(originalData[c][1]);
+                            result.add(base + "Date");
+                            result.add(compactValue);
+                        }
+                    }
+                    // last element reached
+                    else
+                    {
+                        result.add(originalData[c][0]);
+                        result.add(originalData[c][1]);
+                    }
+                }
+                // attribute starts with "date"
+                else if (attr.startsWith("date"))
+                {
+                    String base = originalData[c][0].substring(4, attr.length());
+
+                    // prevent array out of bounds
+                    if ((c + 1) < originalData.length)
+                    {
+                        String nextAttr = originalData[c + 1][0].toLowerCase();
+                        // "date"-"time"-match found
+                        if (nextAttr.startsWith("time"))
+                        {
+                            String compactValue = formatDate(originalData[c][1]) +
+                                " - " + formatTime(originalData[c + 1][1]);
+                            result.add("dateAndTime" + base);
+                            result.add(compactValue);
+                            ++c;
+                        }
+                        // just "date", no "time"
+                        else
+                        {
+                            String compactValue = formatDate(originalData[c][1]);
+                            result.add("date" + base);
+                            result.add(compactValue);
+                        }
+                    }
+                    // last element reached
+                    else
+                    {
+                        String compactValue = formatDate(originalData[c][1]);
+                        result.add("date" + base);
+                        result.add(compactValue);
+                    }
+                }
+            }
+            // time
+            else if (attr.endsWith("time"))
+            {
+                String base = originalData[c][0].substring(0, attr.lastIndexOf("time"));
+
+                // prevent array out of bounds
+                if ((c + 1) < originalData.length)
+                {
+                    String nextAttr = originalData[c + 1][0].toLowerCase();
+
+                    // "time"-"date"-match found
+                    if (nextAttr.endsWith("date"))
+                    {
+                        String compactValue = formatDate(originalData[c + 1][1]) +
+                            " - " + formatTime(originalData[c][1]);
+                        result.add(base + "DateAndTime");
+                        result.add(compactValue);
+                        ++c;
+                    }
+                    // just "time", no "date"
+                    else
+                    {
+                        String compactValue = formatTime(originalData[c][1]);
+                        result.add(base + "Time");
+                        result.add(compactValue);
+                    }
+                }
+                // last element reached
+                else
+                {
+                    String compactValue = formatTime(originalData[c][1]);
+                    result.add(base + "Time");
+                    result.add(compactValue);
+                }
+            }
+            // attribute is neither "currency" nor "date" nor "time"
             else
             {
                 result.add(originalData[c][0]);
@@ -286,5 +425,44 @@ public class DetailedViewUtil
         }
 
         return convertListTo2DStringArray(result);
+    }
+
+    /**
+     * Formats a date-string in the form of "YYYYMMDD" to "DD.MM.YYYY"
+     */
+    private static String formatDate(String date)
+    {
+        // string must be of format "YYYYMMDD"
+        if (date.length() != 8)
+        {
+            return date;
+        }
+
+        String result = "";
+
+        String day = date.substring(6, 8);
+        String month = date.substring(4, 6);
+        String year = date.substring(0, 4);
+
+        return (result + day + "." + month + "." + year);
+    }
+
+    /**
+     * Formats a time-string in the form of "HHMM" to "HH:MM"
+     */
+    private static String formatTime(String time)
+    {
+        // string must be of format "HHMM"
+        if (time.length() != 4)
+        {
+            return time;
+        }
+
+        String result = "";
+
+        String hours = time.substring(0, 2);
+        String minutes = time.substring(2, 4);
+
+        return (result + hours + ":" + minutes);
     }
 }

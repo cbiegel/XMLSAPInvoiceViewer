@@ -23,6 +23,8 @@ import xmlviewer.tree.util.XMLTreeUtil;
 
 public class XMLTreeUtilTest {
 
+    private static final String APPDATA_PATH = System.getenv("APPDATA");
+    private static final String TREE_EXPANSION_PATH = APPDATA_PATH + "\\XMLViewer\\expansionStates";
     private static final String TEST_FILE_PATH = ".\\TestResources\\testTree.xml";
     private static final String FULLY_EXTENDED_STATE = ",0,1,2,4,6,8,10,11,13,15,17,19";
 
@@ -99,8 +101,7 @@ public class XMLTreeUtilTest {
     public void testSerializeAndDeserializeTreeExpansionState()
     {
         int filePathHash = TEST_FILE_PATH.hashCode();
-        String treeExpansionPath = ".\\expansionStates";
-        String treeExpansionFile = treeExpansionPath + "\\treeExp-";
+        String treeExpansionFile = TREE_EXPANSION_PATH + "\\treeExp-";
         String treeExpansionFileSuffix = ".exp";
         String outputFile = treeExpansionFile + filePathHash + treeExpansionFileSuffix;
 
@@ -109,6 +110,12 @@ public class XMLTreeUtilTest {
         XMLTreeUtil.serializeTreeExpansionState(expState, filePathHash);
         File output = new File(outputFile);
 
+        // output.delete();
+
+        // if this assertion fails, you will most likely just have to remove the file
+        // (either uncomment the method call above and run the test again (make sure to comment the line again
+        // afterwards!)
+        // or manually remove the file)
         assertFalse(output.exists());
 
         XMLTreeUtil.expandAllNodes(_testTree);
