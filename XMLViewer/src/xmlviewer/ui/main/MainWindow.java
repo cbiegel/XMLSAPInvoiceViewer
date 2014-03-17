@@ -37,7 +37,17 @@ public class MainWindow {
 
     private static final int DEFAULT_HEIGHT = 500;
 
-    private static final String ICON_FILE_PATH = ".\\Resources\\XMLViewerIcon_16_16.png";
+    // image icon paths
+
+    public static final String ICON_VIEWER_FILE_PATH = ".\\Resources\\XMLViewerIcon_16_16.png";
+
+    public static final String ICON_TREE_VIEW_PATH = ".\\Resources\\tree_view_icon.png";
+
+    public static final String ICON_DETAILED_VIEW_PATH = ".\\Resources\\detailed_view_icon.png";
+
+    public static final String ICON_COLLAPSE_PATH = ".\\Resources\\collapse_icon.png";
+
+    public static final String ICON_EXPAND_PATH = ".\\Resources\\expand_icon.png";
 
     public MainWindow(int x, int y, int width, int height, boolean saveWindowPos, boolean saveTreeState)
     {
@@ -86,7 +96,7 @@ public class MainWindow {
         }
         _frame.setBounds(x_pos, y_pos, width, height);
 
-        ImageIcon frameIcon = new ImageIcon(ICON_FILE_PATH);
+        ImageIcon frameIcon = new ImageIcon(ICON_VIEWER_FILE_PATH);
         _frame.setIconImage(frameIcon.getImage());
 
         _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

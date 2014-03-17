@@ -2,6 +2,7 @@ package xmlviewer.ui.main;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -21,14 +22,15 @@ public class XMLViewerMenu {
     private final JMenu _file;
     private final JMenu _settings;
     private final JMenu _view;
-    private final JMenuItem _open;
-    private final JMenuItem _exit;
+    private final JMenuItem _fileOpen;
+    private final JMenuItem _fileExit;
     private final JCheckBoxMenuItem _settingsSaveWindowLocation;
     private final JCheckBoxMenuItem _settingsSaveTreeState;
     private final JMenuItem _viewSwitchViews;
     private final JMenuItem _viewCollapseAll;
     private final JMenuItem _viewExpandAll;
     private final JCheckBoxMenuItem _viewApplyFilter;
+    private final JCheckBoxMenuItem _viewShowCompact;
 
     public XMLViewerMenu(boolean saveWindowPos, boolean saveTreeState) {
         _menuBar = new JMenuBar();
@@ -41,11 +43,11 @@ public class XMLViewerMenu {
         _view = new JMenu(" View ");
         _view.setName("view");
 
-        _open = new JMenuItem("Open...");
-        _open.setName("open");
+        _fileOpen = new JMenuItem("Open...");
+        _fileOpen.setName("open");
 
-        _exit = new JMenuItem("Exit");
-        _exit.setName("exit");
+        _fileExit = new JMenuItem("Exit");
+        _fileExit.setName("exit");
 
         _settingsSaveWindowLocation = new JCheckBoxMenuItem("Save window location on close");
         _settingsSaveWindowLocation.setName("saveWindowLocation");
@@ -73,6 +75,11 @@ public class XMLViewerMenu {
         _viewApplyFilter.setSelected(false);
         _viewApplyFilter.setEnabled(false);
 
+        _viewShowCompact = new JCheckBoxMenuItem("Show compact attributes");
+        _viewShowCompact.setName("showCompact");
+        _viewShowCompact.setSelected(false);
+        _viewShowCompact.setEnabled(false);
+
         setupMenuBar();
     }
 
@@ -80,21 +87,26 @@ public class XMLViewerMenu {
     {
         _file.setMnemonic(KeyEvent.VK_F);
 
-        _open.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
-        _exit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+        _fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
+        _fileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
         _settingsSaveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.ALT_MASK));
         _settingsSaveTreeState.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
         _viewSwitchViews.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
         _viewCollapseAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
         _viewExpandAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
         _viewApplyFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
+        _viewShowCompact.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK));
 
-        _file.add(_open);
+        _file.add(_fileOpen);
         _file.add(new JSeparator());
-        _file.add(_exit);
+        _file.add(_fileExit);
 
         _settings.add(_settingsSaveTreeState);
         _settings.add(_settingsSaveWindowLocation);
+
+        _viewSwitchViews.setIcon(new ImageIcon(MainWindow.ICON_DETAILED_VIEW_PATH));
+        _viewCollapseAll.setIcon(new ImageIcon(MainWindow.ICON_COLLAPSE_PATH));
+        _viewExpandAll.setIcon(new ImageIcon(MainWindow.ICON_EXPAND_PATH));
 
         _view.add(_viewSwitchViews);
         _view.add(new JSeparator());
@@ -102,6 +114,7 @@ public class XMLViewerMenu {
         _view.add(_viewExpandAll);
         _view.add(new JSeparator());
         _view.add(_viewApplyFilter);
+        _view.add(_viewShowCompact);
 
         _menuBar.add(_file);
         _menuBar.add(_view);
@@ -132,7 +145,7 @@ public class XMLViewerMenu {
 
     public JMenuItem getOpenItem()
     {
-        return _open;
+        return _fileOpen;
     }
 
     public JCheckBoxMenuItem getSettingsSaveWindowLocationItem()
@@ -165,9 +178,14 @@ public class XMLViewerMenu {
         return _viewApplyFilter;
     }
 
+    public JCheckBoxMenuItem getViewShowCompactItem()
+    {
+        return _viewShowCompact;
+    }
+
     public JMenuItem getExitItem()
     {
-        return _exit;
+        return _fileExit;
     }
 
 }

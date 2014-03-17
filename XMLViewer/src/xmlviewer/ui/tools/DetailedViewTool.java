@@ -82,11 +82,13 @@ public class DetailedViewTool
         JList subElementList = _ui.getElementChildrenList();
         JTable elementDetailTable = _ui.getElementDetailTable();
         JCheckBoxMenuItem applyFilter = _parentWindow.getViewerMenu().getViewApplyFilterItem();
+        JCheckBoxMenuItem showCompact = _parentWindow.getViewerMenu().getViewShowCompactItem();
 
         addComboBoxListener(elementComboBox);
         addSubElementListListener(subElementList);
         addElementDetailTableListener(elementDetailTable);
         addApplyFilterListener(applyFilter);
+        addShowCompactListener(showCompact);
     }
 
     private void addComboBoxListener(final JComboBox comboBox)
@@ -153,7 +155,20 @@ public class DetailedViewTool
             @Override
             public void valueChanged(ListSelectionEvent event)
             {
+                // TODO: showCompact berücksichtigen
+
                 displayTable(list);
+                JCheckBoxMenuItem showCompact = _parentWindow.getViewerMenu().getViewShowCompactItem();
+
+                if (!list.isSelectionEmpty())
+                {
+                    showCompact.setEnabled(true);
+                }
+                else
+                {
+                    showCompact.setSelected(false);
+                    showCompact.setEnabled(false);
+                }
             }
 
         });
@@ -272,6 +287,29 @@ public class DetailedViewTool
         });
     }
 
+    private void addShowCompactListener(final JCheckBoxMenuItem checkBox)
+    {
+        checkBox.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent event)
+            {
+                Node selectedNode = _nodeMap.get(_ui.getElementChildrenList().getSelectedIndex());
+                String[][] originalTableData = DetailedViewUtil.getDetailsForSubElement(selectedNode);
+
+                if (checkBox.isSelected())
+                {
+                    String[][] compactTableData = DetailedViewUtil.getCompactAttributes(originalTableData);
+                    fillTableWithData(compactTableData);
+                }
+                else
+                {
+                    fillTableWithData(originalTableData);
+                }
+            }
+        });
+    }
+
     private void fillTableWithData(String[][] data)
     {
         @SuppressWarnings("serial")
@@ -339,7 +377,19 @@ public class DetailedViewTool
                 int nodePosition = list.getSelectedIndex();
                 Node selectedElement = _nodeMap.get(nodePosition);
                 String[][] tableData = DetailedViewUtil.getDetailsForSubElement(selectedElement);
-                fillTableWithData(tableData);
+
+                // compact view is active
+                if (_parentWindow.getViewerMenu().getViewShowCompactItem().isSelected())
+                {
+                    String[][] compactData = DetailedViewUtil.getCompactAttributes(tableData);
+                    fillTableWithData(compactData);
+                }
+                // compact view is not active
+                else
+                {
+                    fillTableWithData(tableData);
+                }
+
             }
             else
             {
@@ -358,12 +408,12 @@ public class DetailedViewTool
                 Node selectedElement = _nodeMap.get(nodePosition);
                 String[][] tableData = DetailedViewUtil.getDetailsForSubElement(selectedElement);
 
-                // parent attributes are not filtered
+                // parent attributes are not to be filtered
                 if (nodePosition == 0)
                 {
                     fillTableWithData(tableData);
                 }
-                // direct children of the parent element are not filtered
+                // direct children of the parent element are not to be filtered
                 else if (DetailedViewUtil.isDirectChild(selectedElement, _nodeMap.get(0)))
                 {
                     fillTableWithData(tableData);
@@ -381,13 +431,34 @@ public class DetailedViewTool
                     {
                         String[][] filteredData =
                             makeIntersection(tableData, filter);
-                        fillTableWithData(filteredData);
+
+                        // compact view is active
+                        if (_parentWindow.getViewerMenu().getViewShowCompactItem().isSelected())
+                        {
+                            String[][] compactData = DetailedViewUtil.getCompactAttributes(filteredData);
+                            fillTableWithData(compactData);
+                        }
+                        // compact view is not active
+                        else
+                        {
+                            fillTableWithData(filteredData);
+                        }
                     }
                     // selected element has not been selected for filtering
                     // (the user did not check the checkBox for this element in the filter dialog)
                     else
                     {
-                        fillTableWithData(tableData);
+                        // compact view is active
+                        if (_parentWindow.getViewerMenu().getViewShowCompactItem().isSelected())
+                        {
+                            String[][] compactData = DetailedViewUtil.getCompactAttributes(tableData);
+                            fillTableWithData(compactData);
+                        }
+                        // compact view is not active
+                        else
+                        {
+                            fillTableWithData(tableData);
+                        }
                     }
                 }
             }

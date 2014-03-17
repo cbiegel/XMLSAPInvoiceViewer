@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -278,6 +279,7 @@ public class MainWindowTool {
                     _ui.getViewerMenu().getViewExpandAllItem().setEnabled(false);
                     _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(false);
                     _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to tree view");
+                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(new ImageIcon(MainWindow.ICON_TREE_VIEW_PATH));
 
                     _viewMode = 1;
                 }
@@ -308,6 +310,7 @@ public class MainWindowTool {
                     _ui.getViewerMenu().getViewExpandAllItem().setEnabled(true);
                     _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(true);
                     _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to detailed view");
+                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(new ImageIcon(MainWindow.ICON_DETAILED_VIEW_PATH));
 
                     _viewMode = 0;
                 }

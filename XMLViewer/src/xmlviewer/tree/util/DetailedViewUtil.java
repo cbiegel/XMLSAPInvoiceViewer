@@ -239,10 +239,52 @@ public class DetailedViewUtil
 
     /**
      * @return This map holds every node that was found in the getSubElementsListFromTree method.
-     *         Every node (value) can be identified by its name (key).
+     *         Every node (value) can be identified by its position (key).
      */
     public static Map<Integer, Node> getNodeMap()
     {
         return nodeMap;
+    }
+
+    public static String[][] getCompactAttributes(String[][] originalData)
+    {
+        List<String> result = new ArrayList<String>();
+
+        for (int c = 0; c < originalData.length; c++)
+        {
+            String attr = originalData[c][0].toLowerCase();
+
+            if (attr.endsWith("amount"))
+            {
+                String base = attr.substring(0, attr.lastIndexOf("amount"));
+
+                // prevent array out of bounds
+                if ((c + 1) < originalData.length)
+                {
+                    String nextAttr = originalData[c + 1][0].toLowerCase();
+
+                    // found a match for the previously found "amount"
+                    if (nextAttr.endsWith("currency") || nextAttr.endsWith("currencycode"))
+                    {
+                        String compactValue = originalData[c][1] + " " + originalData[c + 1][1];
+                        result.add(base);
+                        result.add(compactValue);
+                        ++c;
+                    }
+                }
+                else
+                {
+                    result.add(originalData[c][0]);
+                    result.add(originalData[c][1]);
+                }
+            }
+            else
+            {
+                result.add(originalData[c][0]);
+                result.add(originalData[c][1]);
+            }
+        }
+
+        return convertListTo2DStringArray(result);
     }
 }

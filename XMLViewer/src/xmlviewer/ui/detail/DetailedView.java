@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -189,6 +190,7 @@ public class DetailedView extends JPanel {
         tableScrollPane.setViewportBorder(new LineBorder(new Color(192, 192, 192)));
 
         _detailTable = new JTable();
+        _detailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         _detailTable.setShowGrid(false);
         _detailTable.setFont(new Font("Tahoma", Font.PLAIN, 12));
         _detailTable.setFillsViewportHeight(true);
