@@ -51,6 +51,10 @@ public class DetailedViewToolTest {
         // activate and deactivate the filter
         window.getViewerMenu().getViewApplyFilterItem().setEnabled(true);
         window.getViewerMenu().getViewApplyFilterItem().setSelected(true);
+        ui.getElementChildrenList().setSelectedIndex(2);
         window.getViewerMenu().getViewApplyFilterItem().setSelected(false);
+        ui.getElementChildrenList().setSelectedIndex(1);
+        window.getViewerMenu().getViewShowCompactItem().setSelected(true);
+        window.getViewerMenu().getViewShowCompactItem().setSelected(false);
     }
 }
