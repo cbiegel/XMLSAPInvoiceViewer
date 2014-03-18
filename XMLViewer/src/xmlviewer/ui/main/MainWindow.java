@@ -2,7 +2,6 @@ package xmlviewer.ui.main;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
@@ -39,17 +38,15 @@ public class MainWindow {
 
     // image icon paths
 
-    public static final String ICON_VIEWER_FILE_PATH = "\\image\\XMLViewerIcon_16_16.png";
+    public static final String ICON_VIEWER_FILE_PATH = "/images/XMLViewerIcon_16_16.png";
 
-    public static final String ICON_TREE_VIEW_PATH = "\\image\\tree_view_icon.png";
+    public static final String ICON_TREE_VIEW_PATH = "/images/tree_view_icon.png";
 
-    public static final String ICON_DETAILED_VIEW_PATH = "\\image\\detailed_view_icon.png";
+    public static final String ICON_DETAILED_VIEW_PATH = "/images/detailed_view_icon.png";
 
-    public static final String ICON_COLLAPSE_PATH = "\\image\\collapse_icon.png";
+    public static final String ICON_COLLAPSE_PATH = "/images/collapse_icon.png";
 
-    public static final String ICON_EXPAND_PATH = "\\image\\expand_icon.png";
-
-    private final ClassLoader _classLoader;
+    public static final String ICON_EXPAND_PATH = "/images/expand_icon.png";
 
     public MainWindow(int x, int y, int width, int height, boolean saveWindowPos, boolean saveTreeState)
     {
@@ -63,9 +60,6 @@ public class MainWindow {
 
         _framePanel =
             new JScrollPane(_tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-        _classLoader = new ClassLoader() {
-        };
 
         setupFrame(x, y, width, height, saveWindowPos);
     }
@@ -101,8 +95,7 @@ public class MainWindow {
         }
         _frame.setBounds(x_pos, y_pos, width, height);
 
-        ImageIcon frameIcon = new ImageIcon(_classLoader.getResource(ICON_VIEWER_FILE_PATH));
-        _frame.setIconImage(frameIcon.getImage());
+        _frame.setIconImage(Toolkit.getDefaultToolkit().getImage((getClass().getResource(ICON_VIEWER_FILE_PATH))));
 
         _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         _frame.setVisible(true);
