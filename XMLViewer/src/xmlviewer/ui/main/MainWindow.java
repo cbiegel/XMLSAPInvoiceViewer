@@ -39,15 +39,17 @@ public class MainWindow {
 
     // image icon paths
 
-    public static final String ICON_VIEWER_FILE_PATH = ".\\Resources\\XMLViewerIcon_16_16.png";
+    public static final String ICON_VIEWER_FILE_PATH = "\\image\\XMLViewerIcon_16_16.png";
 
-    public static final String ICON_TREE_VIEW_PATH = ".\\Resources\\tree_view_icon.png";
+    public static final String ICON_TREE_VIEW_PATH = "\\image\\tree_view_icon.png";
 
-    public static final String ICON_DETAILED_VIEW_PATH = ".\\Resources\\detailed_view_icon.png";
+    public static final String ICON_DETAILED_VIEW_PATH = "\\image\\detailed_view_icon.png";
 
-    public static final String ICON_COLLAPSE_PATH = ".\\Resources\\collapse_icon.png";
+    public static final String ICON_COLLAPSE_PATH = "\\image\\collapse_icon.png";
 
-    public static final String ICON_EXPAND_PATH = ".\\Resources\\expand_icon.png";
+    public static final String ICON_EXPAND_PATH = "\\image\\expand_icon.png";
+
+    private final ClassLoader _classLoader;
 
     public MainWindow(int x, int y, int width, int height, boolean saveWindowPos, boolean saveTreeState)
     {
@@ -61,6 +63,9 @@ public class MainWindow {
 
         _framePanel =
             new JScrollPane(_tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        _classLoader = new ClassLoader() {
+        };
 
         setupFrame(x, y, width, height, saveWindowPos);
     }
@@ -96,7 +101,7 @@ public class MainWindow {
         }
         _frame.setBounds(x_pos, y_pos, width, height);
 
-        ImageIcon frameIcon = new ImageIcon(ICON_VIEWER_FILE_PATH);
+        ImageIcon frameIcon = new ImageIcon(_classLoader.getResource(ICON_VIEWER_FILE_PATH));
         _frame.setIconImage(frameIcon.getImage());
 
         _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

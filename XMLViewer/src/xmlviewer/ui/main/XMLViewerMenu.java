@@ -31,8 +31,13 @@ public class XMLViewerMenu {
     private final JMenuItem _viewExpandAll;
     private final JCheckBoxMenuItem _viewApplyFilter;
     private final JCheckBoxMenuItem _viewShowCompact;
+    private final ClassLoader _classLoader;
 
-    public XMLViewerMenu(boolean saveWindowPos, boolean saveTreeState) {
+    public XMLViewerMenu(boolean saveWindowPos, boolean saveTreeState)
+    {
+        _classLoader = new ClassLoader() {
+        };
+
         _menuBar = new JMenuBar();
         _file = new JMenu(" File ");
         _file.setName("file");
@@ -104,9 +109,9 @@ public class XMLViewerMenu {
         _settings.add(_settingsSaveTreeState);
         _settings.add(_settingsSaveWindowLocation);
 
-        _viewSwitchViews.setIcon(new ImageIcon(MainWindow.ICON_DETAILED_VIEW_PATH));
-        _viewCollapseAll.setIcon(new ImageIcon(MainWindow.ICON_COLLAPSE_PATH));
-        _viewExpandAll.setIcon(new ImageIcon(MainWindow.ICON_EXPAND_PATH));
+        _viewSwitchViews.setIcon(new ImageIcon(_classLoader.getResource(MainWindow.ICON_DETAILED_VIEW_PATH)));
+        _viewCollapseAll.setIcon(new ImageIcon(_classLoader.getResource(MainWindow.ICON_COLLAPSE_PATH)));
+        _viewExpandAll.setIcon(new ImageIcon(_classLoader.getResource(MainWindow.ICON_EXPAND_PATH)));
 
         _view.add(_viewSwitchViews);
         _view.add(new JSeparator());

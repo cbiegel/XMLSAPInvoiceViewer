@@ -54,6 +54,8 @@ public class MainWindowTool {
 
     private String _treeExpansionState;
 
+    private ClassLoader _classLoader;
+
     public MainWindowTool()
     {
         _currentFilePath = "";
@@ -62,6 +64,9 @@ public class MainWindowTool {
         loadSettings();
 
         _ui = new MainWindow(_x_pos, _y_pos, _width, _height, _saveWindowPosition, _saveTreeState);
+
+        _classLoader = new ClassLoader() {
+        };
 
         setupListeners();
     }
@@ -279,7 +284,8 @@ public class MainWindowTool {
                     _ui.getViewerMenu().getViewExpandAllItem().setEnabled(false);
                     _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(false);
                     _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to tree view");
-                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(new ImageIcon(MainWindow.ICON_TREE_VIEW_PATH));
+                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(
+                        new ImageIcon(_classLoader.getResource(MainWindow.ICON_TREE_VIEW_PATH)));
 
                     _viewMode = 1;
                 }
@@ -310,7 +316,8 @@ public class MainWindowTool {
                     _ui.getViewerMenu().getViewExpandAllItem().setEnabled(true);
                     _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(true);
                     _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to detailed view");
-                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(new ImageIcon(MainWindow.ICON_DETAILED_VIEW_PATH));
+                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(
+                        new ImageIcon(_classLoader.getResource(MainWindow.ICON_DETAILED_VIEW_PATH)));
 
                     _viewMode = 0;
                 }
