@@ -51,7 +51,7 @@ public class XMLTreeUtil
     public static String getTreeExpansionState(JTree tree, int row)
     {
         TreePath rowPath = tree.getPathForRow(row);
-        StringBuffer buf = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         int rowCount = tree.getRowCount();
 
         for (int i = row; i < rowCount; i++)
@@ -61,14 +61,14 @@ public class XMLTreeUtil
             if (i == row || isDescendant(path, rowPath))
             {
                 if (tree.isExpanded(path))
-                    buf.append("," + String.valueOf(i - row));
+                    sb.append("," + String.valueOf(i - row));
             }
             else
             {
                 break;
             }
         }
-        return buf.toString();
+        return sb.toString();
     }
 
     /**
