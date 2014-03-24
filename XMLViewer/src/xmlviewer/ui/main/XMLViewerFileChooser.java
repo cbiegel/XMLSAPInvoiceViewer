@@ -2,9 +2,7 @@ package xmlviewer.ui.main;
 
 import java.awt.Component;
 import java.io.File;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -19,7 +17,6 @@ public class XMLViewerFileChooser {
     private final JFileChooser _fileChooser;
     private static String _lastFilePath = "";
     private static boolean _filePathChanged = false;
-    private static final String ICON_FILE_PATH = ".\\Resources\\XMLViewerIcon_16_16.png";
 
     public XMLViewerFileChooser(Component parentFrame) {
         _fileChooser = new JFileChooser("Open an XML file");
@@ -39,9 +36,6 @@ public class XMLViewerFileChooser {
         _fileChooser.setAcceptAllFileFilterUsed(false);
 
         // JFileChooser inherits the icon of the parent in showOpenDialog
-        ImageIcon icon = new ImageIcon(ICON_FILE_PATH);
-        JFrame iconFrame = new JFrame();
-        iconFrame.setIconImage(icon.getImage());
         final int result = _fileChooser.showOpenDialog(parentFrame);
 
         _fileChooser.setVisible(true);

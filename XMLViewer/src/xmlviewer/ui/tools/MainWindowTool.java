@@ -104,6 +104,12 @@ public class MainWindowTool {
             public void actionPerformed(ActionEvent event) {
                 XMLViewerFileChooser filechooser = new XMLViewerFileChooser(_ui.getFrame());
 
+                // save the current tree's expansion state if the respective option was activated
+                if (_saveTreeState)
+                {
+                    saveTreeExpansionState();
+                }
+
                 _currentFilePath = filechooser.getLastFilePath();
 
                 if (_saveTreeState)
@@ -116,13 +122,15 @@ public class MainWindowTool {
                     // a file has been opened in the FileChooser
                     if (!_currentFilePath.equals("") && filechooser.hasPathChanged())
                     {
+                        JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSettingsSaveTreeStateItem();
+
                         InputStream ist = new FileInputStream(new File(_currentFilePath));
                         InputSource is = new InputSource(ist);
                         String fileName = getFileNameFromPathName(_currentFilePath);
+
                         _ui.initializeAndDisplayTree(is, fileName, _treeExpansionState);
 
                         // enable the menu components
-                        JCheckBoxMenuItem saveTreeState = _ui.getViewerMenu().getSettingsSaveTreeStateItem();
                         JMenuItem switchViews = _ui.getViewerMenu().getViewSwitchViewsItem();
                         JMenuItem collapseAll = _ui.getViewerMenu().getViewCollapseAllItem();
                         JMenuItem expandAll = _ui.getViewerMenu().getViewExpandAllItem();
