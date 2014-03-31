@@ -155,6 +155,11 @@ public class MainWindowTool {
                         {
                             find.setEnabled(false);
                         }
+
+                        if (_viewMode == 1)
+                        {
+                            switchViewMode();
+                        }
                     }
 
                 } catch (FileNotFoundException e) {
@@ -276,64 +281,69 @@ public class MainWindowTool {
             @Override
             public void actionPerformed(ActionEvent event)
             {
-                // switch from tree view to detailed view
-                if (_viewMode == 0)
-                {
-                    // save the current tree's state
-                    saveTreeExpansionState();
-
-                    DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree(), _ui);
-                    _ui.initializeAndDisplayDetailedView(detailViewTool.getUI());
-
-                    // adjust the main frame
-                    adjustFrameToDetailedView();
-
-                    _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(false);
-                    _ui.getViewerMenu().getViewExpandAllItem().setEnabled(false);
-                    _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(false);
-                    _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to tree view");
-                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(
-                        new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                            (getClass().getResource(MainWindow.ICON_TREE_VIEW_PATH)))));
-
-                    _viewMode = 1;
-                }
-                // switch from detailed view to tree view
-                else
-                {
-                    try
-                    {
-                        InputStream ist = new FileInputStream(new File(_currentFilePath));
-                        InputSource is = new InputSource(ist);
-                        String fileName = getFileNameFromPathName(_currentFilePath);
-
-                        loadTreeExpansionState();
-
-                        _ui.initializeAndDisplayTree(is, fileName, _treeExpansionState);
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (TransformerException e) {
-                        e.printStackTrace();
-                    } catch (ParserConfigurationException e) {
-                        e.printStackTrace();
-                    } catch (SAXException e) {
-                        e.printStackTrace();
-                    }
-
-                    _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(true);
-                    _ui.getViewerMenu().getViewExpandAllItem().setEnabled(true);
-                    _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(true);
-                    _ui.getViewerMenu().getViewFindItem().setEnabled(false);
-                    _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to detailed view");
-                    _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(
-                        new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-                            (getClass().getResource(MainWindow.ICON_DETAILED_VIEW_PATH)))));
-
-                    _viewMode = 0;
-                }
+                switchViewMode();
             }
         });
+    }
+
+    private void switchViewMode()
+    {
+        // switch from tree view to detailed view
+        if (_viewMode == 0)
+        {
+            // save the current tree's state
+            saveTreeExpansionState();
+
+            DetailedViewTool detailViewTool = new DetailedViewTool(_ui.getTree(), _ui);
+            _ui.initializeAndDisplayDetailedView(detailViewTool.getUI());
+
+            // adjust the main frame
+            adjustFrameToDetailedView();
+
+            _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(false);
+            _ui.getViewerMenu().getViewExpandAllItem().setEnabled(false);
+            _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(false);
+            _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to tree view");
+            _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(
+                new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+                    (getClass().getResource(MainWindow.ICON_TREE_VIEW_PATH)))));
+
+            _viewMode = 1;
+        }
+        // switch from detailed view to tree view
+        else
+        {
+            try
+            {
+                InputStream ist = new FileInputStream(new File(_currentFilePath));
+                InputSource is = new InputSource(ist);
+                String fileName = getFileNameFromPathName(_currentFilePath);
+
+                loadTreeExpansionState();
+
+                _ui.initializeAndDisplayTree(is, fileName, _treeExpansionState);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (TransformerException e) {
+                e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
+            }
+
+            _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(true);
+            _ui.getViewerMenu().getViewExpandAllItem().setEnabled(true);
+            _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(true);
+            _ui.getViewerMenu().getViewFindItem().setEnabled(false);
+            _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to detailed view");
+            _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(
+                new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+                    (getClass().getResource(MainWindow.ICON_DETAILED_VIEW_PATH)))));
+
+            _viewMode = 0;
+        }
     }
 
     /**

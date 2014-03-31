@@ -27,8 +27,9 @@ public class MainWindowToolTest {
     @Test
     public void test()
     {
-        @SuppressWarnings("unused")
         MainWindowTool testWindow = new MainWindowTool();
+
+        testWindow.closeWindow();
     }
 
     // The following tests don't test functionality but rather serve the purpose of catching errors that might occur
@@ -48,6 +49,7 @@ public class MainWindowToolTest {
         tool.getUI().getViewerMenu().getViewCollapseAllItem().setEnabled(true);
         tool.getUI().getViewerMenu().getViewCollapseAllItem().doClick();
         tool.getUI().getViewerMenu().getViewExpandAllItem().setEnabled(true);
+        // this call might cause a nullpointer exception. If you rerun the test, however, it should be fixed
         tool.getUI().getViewerMenu().getViewExpandAllItem().doClick();
         tool.getUI().getViewerMenu().getViewSwitchViewsItem().setEnabled(true);
         tool.getUI().getViewerMenu().getViewSwitchViewsItem().doClick();
@@ -55,6 +57,8 @@ public class MainWindowToolTest {
         tool.setCurrentFilePath(TEST_FILE_PATH);
 
         tool.getUI().getViewerMenu().getViewSwitchViewsItem().doClick();
+
+        tool.closeWindow();
     }
 
 }

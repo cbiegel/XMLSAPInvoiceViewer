@@ -43,5 +43,7 @@ public class FilterChildrenToolTest
         MainWindow window = new MainWindow(0, 0, 0, 0, false, false);
         @SuppressWarnings("unused")
         FilterChildrenTool tool = new FilterChildrenTool(_parentNode, 0, window.getFrame());
+
+        window.closeWindow();
     }
 }

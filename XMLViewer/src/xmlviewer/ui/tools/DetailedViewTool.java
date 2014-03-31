@@ -67,6 +67,11 @@ public class DetailedViewTool implements Observer
         return _ui;
     }
 
+    public void closeWindow()
+    {
+        _parentWindow.closeWindow();
+    }
+
     /**
      * Fills the combo box of the UI with data (names of the elements of the UI's tree).
      */
@@ -692,7 +697,13 @@ public class DetailedViewTool implements Observer
                     // search the table (attributes)
                     if (_findElementTool.isSearchAttributesSelected())
                     {
-                        int currentListIndex = (c - 1) >= 0 ? (c - 1) : 0;
+                        int currentListIndex = (c - 1) >= 0 ? (c - 1) : currentListSelectionIndex;
+
+                        if (!_findElementTool.isWrapSearchSelected() && currentListSelectionIndex == listModel.getSize() - 1)
+                        {
+                            currentListIndex = elementList.getSelectedIndex();
+                        }
+
                         Node element = _nodeMap.get(currentListIndex);
                         String[][] attributes = DetailedViewUtil.getDetailsForSubElement(element);
                         boolean attributeMatchFound = false;
@@ -707,7 +718,7 @@ public class DetailedViewTool implements Observer
                         {
                             if (searchAttributes(element, currentListIndex, i, searchText))
                             {
-                                if (!wrapped)
+                                if (!wrapped || (wrapped && currentListIndex == listModel.getSize() - 1))
                                 {
                                     _findElementTool.setStatusLabel("");
                                 }
@@ -902,5 +913,10 @@ public class DetailedViewTool implements Observer
 
         // no match
         return false;
+    }
+
+    public FindElementTool getFindElementTool()
+    {
+        return _findElementTool;
     }
 }

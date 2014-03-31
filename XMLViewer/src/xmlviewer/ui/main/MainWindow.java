@@ -137,6 +137,11 @@ public class MainWindow {
         XMLTreeUtil.loadTreeExpansionState(_tree, expansionState, 0);
     }
 
+    public void closeWindow()
+    {
+        _frame.dispose();
+    }
+
     /**
      * @return The JFrame component of this window.
      */

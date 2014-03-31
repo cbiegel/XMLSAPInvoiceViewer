@@ -2,6 +2,8 @@ package xmlviewer.ui.tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
@@ -28,16 +30,17 @@ public class FindElementTool extends Observable
             _ui.getFrame().requestFocus();
             _ui.getTextField().requestFocus();
         }
-
     }
 
     private void setupListeners()
     {
         JButton button = _ui.getButton();
         JTextField textfield = _ui.getTextField();
+        JFrame frame = _ui.getFrame();
 
         addButtonListener(button);
         addTextFieldListener(textfield);
+        addWindowListener(frame);
     }
 
     private void addButtonListener(final JButton button)
@@ -65,7 +68,19 @@ public class FindElementTool extends Observable
         });
     }
 
-    private void searchElement(String searchText)
+    private void addWindowListener(final JFrame frame)
+    {
+        frame.addWindowListener(new WindowAdapter()
+        {
+            @Override
+            public void windowClosing(WindowEvent e)
+            {
+                _ui = null;
+            }
+        });
+    }
+
+    public void searchElement(String searchText)
     {
         setChanged();
         notifyObservers(searchText);
@@ -94,5 +109,35 @@ public class FindElementTool extends Observable
     public boolean isSearchAttributesSelected()
     {
         return _ui.getCheckBoxSearchAttributes().isSelected();
+    }
+
+    public void setCaseSensitive(boolean value)
+    {
+        _ui.getCheckBoxCaseSensitive().setSelected(value);
+    }
+
+    public void setWrapSearch(boolean value)
+    {
+        _ui.getCheckBoxWrapSearch().setSelected(value);
+    }
+
+    public void setWholeMatch(boolean value)
+    {
+        _ui.getCheckBoxWholeMatch().setSelected(value);
+    }
+
+    public void setSearchAttributes(boolean value)
+    {
+        _ui.getCheckBoxSearchAttributes().setSelected(value);
+    }
+
+    public String getSearchText()
+    {
+        return _ui.getTextField().getText();
+    }
+
+    public String getStatusLabelText()
+    {
+        return _ui.getStatusLabel().getText();
     }
 }
