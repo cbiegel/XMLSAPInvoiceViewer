@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 
 @SuppressWarnings("serial")
-public class DetailedView extends JPanel {
+public class DetailedViewPanel extends JPanel {
 
     public static final int DETAILED_VIEW_DEFAULT_WIDTH = 1000;
     public static final int DETAILED_VIEW_DEFAULT_HEIGHT = 620;
@@ -37,7 +37,7 @@ public class DetailedView extends JPanel {
     /**
      * Create the panel.
      */
-    public DetailedView() {
+    public DetailedViewPanel() {
 
         JPanel elementLabelPanel = new JPanel();
         elementLabelPanel.setBackground(SystemColor.menu);
@@ -79,6 +79,7 @@ public class DetailedView extends JPanel {
 
         _elementComboBox = new JComboBox();
         _elementComboBox.setMaximumRowCount(6);
+        _elementComboBox.setFocusable(false);
         GroupLayout gl_elementSelectionPanel = new GroupLayout(elementSelectionPanel);
         gl_elementSelectionPanel.setHorizontalGroup(
                 gl_elementSelectionPanel.createParallelGroup(Alignment.TRAILING)

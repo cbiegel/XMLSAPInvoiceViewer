@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -18,13 +20,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.ListModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlviewer.tree.util.DetailedViewUtil;
-import xmlviewer.ui.detail.DetailedView;
+import xmlviewer.ui.detail.DetailedViewPanel;
 import xmlviewer.ui.main.MainWindow;
 import xmlviewer.ui.main.XMLViewerMenu;
 
@@ -35,19 +38,20 @@ import xmlviewer.ui.main.XMLViewerMenu;
  *         components.
  * 
  */
-public class DetailedViewTool
+public class DetailedViewTool implements Observer
 {
-    private DetailedView _ui;
+    private DetailedViewPanel _ui;
     private JTree _tree;
     private Map<Integer, Node> _nodeMap;
     private int _selectedTableRow;
     private MainWindow _parentWindow;
     private Map<String, String[]> _filterMap;
     private String[] _filteredList;
+    private FindElementTool _findElementTool;
 
     public DetailedViewTool(JTree tree, MainWindow parent)
     {
-        _ui = new DetailedView();
+        _ui = new DetailedViewPanel();
         _tree = tree;
         _nodeMap = new HashMap<Integer, Node>();
         _selectedTableRow = -1;
@@ -58,7 +62,7 @@ public class DetailedViewTool
         fillComboBoxData();
     }
 
-    public DetailedView getUI()
+    public DetailedViewPanel getUI()
     {
         return _ui;
     }
@@ -82,12 +86,14 @@ public class DetailedViewTool
         JComboBox elementComboBox = _ui.getElementComboBox();
         JList subElementList = _ui.getElementChildrenList();
         JTable elementDetailTable = _ui.getElementDetailTable();
+        JMenuItem findElement = _parentWindow.getViewerMenu().getViewFindItem();
         JCheckBoxMenuItem applyFilter = _parentWindow.getViewerMenu().getViewApplyFilterItem();
         JCheckBoxMenuItem showCompact = _parentWindow.getViewerMenu().getViewShowCompactItem();
 
         addComboBoxListener(elementComboBox);
         addSubElementListListener(subElementList);
         addElementDetailTableListener(elementDetailTable);
+        addFindElementListener(findElement);
         addApplyFilterListener(applyFilter);
         addShowCompactListener(showCompact);
     }
@@ -99,13 +105,14 @@ public class DetailedViewTool
             @Override
             public void actionPerformed(ActionEvent event)
             {
-                // update the element label
+                // update the element label (META INFO)
                 if (comboBox.getSelectedIndex() == 0)
                 {
                     _ui.getElementLabel().setText("Meta Info");
                     _ui.getElementNumberLabel().setText("");
                     _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(false);
                     _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(false);
+                    _parentWindow.getViewerMenu().getViewFindItem().setEnabled(false);
 
                     // fill the elementTable with data
                     fillTableWithMetaInfoData();
@@ -115,12 +122,14 @@ public class DetailedViewTool
 
                     updateElementDetailLabel();
                 }
+                // update the element label (ELEMENT INFO)
                 else
                 {
                     _ui.getElementLabel().setText("Element");
                     _ui.getElementNumberLabel().setText(String.valueOf(comboBox.getSelectedIndex()));
                     _parentWindow.getViewerMenu().getViewApplyFilterItem().setSelected(false);
                     _parentWindow.getViewerMenu().getViewApplyFilterItem().setEnabled(false);
+                    _parentWindow.getViewerMenu().getViewFindItem().setEnabled(true);
 
                     // fill the elementList with data
                     Node elementNode = getElementNode((comboBox.getSelectedIndex() - 1));
@@ -252,6 +261,18 @@ public class DetailedViewTool
                         table.setRowSelectionInterval(maxRow, maxRow);
                     }
                 }
+            }
+        });
+    }
+
+    private void addFindElementListener(final JMenuItem findItem)
+    {
+        findItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent event)
+            {
+                _findElementTool = new FindElementTool(_parentWindow.getFrame(), DetailedViewTool.this);
             }
         });
     }
@@ -579,5 +600,307 @@ public class DetailedViewTool
         }
 
         _ui.getElementDetailLabel().setText(elementDetailLabel);
+    }
+
+    @Override
+    public void update(Observable observable, Object searchTextObject)
+    {
+        if (searchTextObject instanceof String)
+        {
+            String searchText = (String) searchTextObject;
+            JList elementList = _ui.getElementChildrenList();
+            ListModel listModel = elementList.getModel();
+            boolean wrapped = false;
+
+            // search the list for the next occurrence of searchText
+            // if no element in the list is currently selected, the search will start from the top of the list
+            if (elementList.isSelectionEmpty())
+            {
+                for (int c = 0; c < listModel.getSize(); c++)
+                {
+
+                    // search the list
+                    if (searchElementList(c, searchText))
+                    {
+                        _findElementTool.setStatusLabel("");
+                        break;
+                    }
+                    // search the table
+                    else if (_findElementTool.isSearchAttributesSelected())
+                    {
+                        Node element = _nodeMap.get(c);
+                        String[][] attributes = DetailedViewUtil.getDetailsForSubElement(element);
+                        boolean attributeMatchFound = false;
+
+                        for (int i = 0; i < attributes.length; i++)
+                        {
+                            if (searchAttributes(element, c, i, searchText))
+                            {
+                                attributeMatchFound = true;
+                                _findElementTool.setStatusLabel("");
+                                break;
+                            }
+                        }
+
+                        if (attributeMatchFound)
+                        {
+                            break;
+                        }
+                    }
+
+                    // last element reached, no match found
+                    if (c == (listModel.getSize() - 1))
+                    {
+                        _findElementTool.setStatusLabel("No match found");
+                    }
+                }
+            }
+            // if an element is already selected, we will start the search from there
+            else
+            {
+                int startIndex = elementList.getSelectedIndex();
+
+                // determine the start index for the upcoming loop.
+                // if the currently selected element is the last entry of the list, start at the beginning
+                if (startIndex == (listModel.getSize() - 1))
+                {
+                    if (_findElementTool.isWrapSearchSelected())
+                    {
+                        startIndex = 0;
+                    }
+                    else
+                    {
+                        startIndex = elementList.getSelectedIndex();
+                    }
+                }
+                else
+                {
+                    ++startIndex;
+                }
+
+                // start the iteration through the list
+                for (int c = startIndex; c < listModel.getSize(); c++)
+                {
+                    if (c == 0)
+                    {
+                        wrapped = true;
+                        _findElementTool.setStatusLabel("Wrapped search");
+                    }
+
+                    int currentListSelectionIndex = elementList.getSelectedIndex();
+
+                    // search the table (attributes)
+                    if (_findElementTool.isSearchAttributesSelected())
+                    {
+                        int currentListIndex = (c - 1) >= 0 ? (c - 1) : 0;
+                        Node element = _nodeMap.get(currentListIndex);
+                        String[][] attributes = DetailedViewUtil.getDetailsForSubElement(element);
+                        boolean attributeMatchFound = false;
+                        int attributeStartIndex = _ui.getElementDetailTable().getSelectedRow() + 1;
+                        if (currentListSelectionIndex != currentListIndex)
+                        {
+                            attributeStartIndex = 0;
+                        }
+
+                        // start the iteration through the table
+                        for (int i = attributeStartIndex; i < attributes.length; i++)
+                        {
+                            if (searchAttributes(element, currentListIndex, i, searchText))
+                            {
+                                if (!wrapped)
+                                {
+                                    _findElementTool.setStatusLabel("");
+                                }
+                                else
+                                {
+                                    wrapped = false;
+                                }
+
+                                attributeMatchFound = true;
+                                break;
+                            }
+                        }
+
+                        if (attributeMatchFound)
+                        {
+                            break;
+                        }
+                    }
+
+                    // search the list
+                    if (searchElementList(c, searchText))
+                    {
+                        int newSelectionIndex = elementList.getSelectedIndex();
+                        if (currentListSelectionIndex == newSelectionIndex)
+                        {
+                            _findElementTool.setStatusLabel("Last match reached");
+                        }
+                        else
+                        {
+                            if (!wrapped)
+                            {
+                                _findElementTool.setStatusLabel("");
+                            }
+                            else
+                            {
+                                wrapped = false;
+                            }
+
+                            break;
+                        }
+                    }
+
+                    // wrap search, last element reached
+                    if (c == (listModel.getSize() - 1))
+                    {
+                        if (_findElementTool.isWrapSearchSelected())
+                        {
+
+                            // this is the second time the loop reaches this point without finding a match
+                            if (wrapped)
+                            {
+                                _findElementTool.setStatusLabel("No match found");
+                                wrapped = false;
+                                break;
+                            }
+
+                            c = -1;
+                        }
+                        else
+                        {
+                            _findElementTool.setStatusLabel("Last match reached");
+                        }
+                    }
+                }
+            }
+        }
+        // this should never happen
+        else
+        {
+            System.err.println("ERROR: searchText object is not a String. How could this happen? :(");
+            return;
+        }
+    }
+
+    /**
+     * Compares the entry at the given index with searchText. If they match, returns true. If not, returns false.
+     * This method takes into account the various options from the search window (the JCheckBoxes).
+     */
+    private boolean searchElementList(int currentEntryIndex, String searchText)
+    {
+        JList elementList = _ui.getElementChildrenList();
+        String currentEntry = (String) elementList.getModel().getElementAt(currentEntryIndex);
+        currentEntry = DetailedViewUtil.stripStringToLettersAndNumbers(currentEntry);
+
+        return findMatch(currentEntry, searchText, 0, currentEntryIndex, 0);
+    }
+
+    private boolean searchAttributes(Node parentElement, int currentListIndex, int currentAttributeIndex, String searchText)
+    {
+        String[][] attributes = DetailedViewUtil.getDetailsForSubElement(parentElement);
+        String currentEntry = attributes[currentAttributeIndex][0];
+        currentEntry = DetailedViewUtil.stripStringToLettersAndNumbers(currentEntry);
+
+        return findMatch(currentEntry, searchText, 1, currentListIndex, currentAttributeIndex);
+    }
+
+    /**
+     * @param searchMode
+     *            0 = list , 1 = attributes
+     */
+    private boolean findMatch(String s1, String s2, int searchMode, int currentListIndex, int currentAttributeIndex)
+    {
+        JList elementList = _ui.getElementChildrenList();
+        JTable attributeTable = null;
+
+        // case sensitive enabled
+        if (_findElementTool.isCaseSensitiveSelected())
+        {
+            // whole match enabled
+            if (_findElementTool.isWholeMatchSelected())
+            {
+                // match found
+                if (s1.equals(s2))
+                {
+                    if (searchMode == 0)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                    }
+                    else if (searchMode == 1)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                        attributeTable = _ui.getElementDetailTable();
+                        attributeTable.setRowSelectionInterval(currentAttributeIndex, currentAttributeIndex);
+                    }
+
+                    return true;
+                }
+            }
+            // whole match disabled
+            else
+            {
+                if (s1.contains(s2))
+                {
+                    if (searchMode == 0)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                    }
+                    else if (searchMode == 1)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                        attributeTable = _ui.getElementDetailTable();
+                        attributeTable.setRowSelectionInterval(currentAttributeIndex, currentAttributeIndex);
+                    }
+
+                    return true;
+                }
+            }
+        }
+        // case sensitive disabled
+        else
+        {
+            // whole match enabled
+            if (_findElementTool.isWholeMatchSelected())
+            {
+                // match found
+                if (s1.toLowerCase().equals(s2.toLowerCase()))
+                {
+                    if (searchMode == 0)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                    }
+                    else if (searchMode == 1)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                        attributeTable = _ui.getElementDetailTable();
+                        attributeTable.setRowSelectionInterval(currentAttributeIndex, currentAttributeIndex);
+                    }
+
+                    return true;
+                }
+            }
+            // whole match disabled
+            else
+            {
+                if (s1.toLowerCase().contains(s2))
+                {
+                    if (searchMode == 0)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                    }
+                    else if (searchMode == 1)
+                    {
+                        elementList.setSelectedIndex(currentListIndex);
+                        attributeTable = _ui.getElementDetailTable();
+                        attributeTable.setRowSelectionInterval(currentAttributeIndex, currentAttributeIndex);
+                    }
+
+                    return true;
+                }
+            }
+        }
+
+        // no match
+        return false;
     }
 }

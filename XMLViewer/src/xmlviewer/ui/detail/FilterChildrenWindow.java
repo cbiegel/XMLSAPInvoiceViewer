@@ -21,7 +21,7 @@ import javax.swing.border.EmptyBorder;
  *         This class serves as the UI component of the FilterChildren component
  */
 @SuppressWarnings("serial")
-public class FilterChildren extends JDialog {
+public class FilterChildrenWindow extends JDialog {
 
     private CheckBoxList _attributesCheckBoxList;
     private CheckBoxList _childrenCheckBoxList;
@@ -36,7 +36,7 @@ public class FilterChildren extends JDialog {
     /**
      * Create the dialog.
      */
-    public FilterChildren(JFrame owner) {
+    public FilterChildrenWindow(JFrame owner) {
         super(owner);
         setTitle("Filter children");
         setModalityType(ModalityType.APPLICATION_MODAL);

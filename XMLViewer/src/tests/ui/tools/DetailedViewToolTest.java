@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 import xmlviewer.tree.XMLTreeModel;
-import xmlviewer.ui.detail.DetailedView;
+import xmlviewer.ui.detail.DetailedViewPanel;
 import xmlviewer.ui.main.MainWindow;
 import xmlviewer.ui.tools.DetailedViewTool;
 
@@ -33,7 +33,7 @@ public class DetailedViewToolTest {
     {
         DetailedViewTool tool = new DetailedViewTool(_tree, new MainWindow(0, 0, 0, 0, false, false));
         @SuppressWarnings("unused")
-        DetailedView ui = tool.getUI();
+        DetailedViewPanel ui = tool.getUI();
     }
 
     // The following tests don't test functionality but rather serve the purpose of catching errors that might occur
@@ -44,7 +44,7 @@ public class DetailedViewToolTest {
     {
         MainWindow window = new MainWindow(0, 0, 0, 0, false, false);
         DetailedViewTool tool = new DetailedViewTool(_tree, window);
-        DetailedView ui = tool.getUI();
+        DetailedViewPanel ui = tool.getUI();
 
         ui.getElementComboBox().setSelectedIndex(1);
         ui.getElementChildrenList().setSelectedIndex(1);

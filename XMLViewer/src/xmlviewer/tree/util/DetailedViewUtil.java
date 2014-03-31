@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
  *         DetailedViewTool). The main task of this class is to process the hierarchies of nodes and transform them into
  *         a String representation.
  */
-public class DetailedViewUtil
+public abstract class DetailedViewUtil
 {
     /**
      * maps names of nodes (String) to their respective objects (Node). This map updates every time

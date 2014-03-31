@@ -21,7 +21,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import xmlviewer.tree.XMLTreeExpansionState;
 import xmlviewer.tree.util.XMLTreeUtil;
-import xmlviewer.ui.detail.DetailedView;
+import xmlviewer.ui.detail.DetailedViewPanel;
 import xmlviewer.ui.main.MainWindow;
 import xmlviewer.ui.main.XMLViewerFileChooser;
 
@@ -134,6 +134,7 @@ public class MainWindowTool {
                         JMenuItem switchViews = _ui.getViewerMenu().getViewSwitchViewsItem();
                         JMenuItem collapseAll = _ui.getViewerMenu().getViewCollapseAllItem();
                         JMenuItem expandAll = _ui.getViewerMenu().getViewExpandAllItem();
+                        JMenuItem find = _ui.getViewerMenu().getViewFindItem();
 
                         if (!saveTreeState.isEnabled())
                             saveTreeState.setEnabled(true);
@@ -150,6 +151,10 @@ public class MainWindowTool {
                         if (!expandAll.isEnabled())
                             expandAll.setEnabled(true);
 
+                        if (find.isEnabled())
+                        {
+                            find.setEnabled(false);
+                        }
                     }
 
                 } catch (FileNotFoundException e) {
@@ -319,6 +324,7 @@ public class MainWindowTool {
                     _ui.getViewerMenu().getViewCollapseAllItem().setEnabled(true);
                     _ui.getViewerMenu().getViewExpandAllItem().setEnabled(true);
                     _ui.getViewerMenu().getSettingsSaveTreeStateItem().setEnabled(true);
+                    _ui.getViewerMenu().getViewFindItem().setEnabled(false);
                     _ui.getViewerMenu().getViewSwitchViewsItem().setText("Switch to detailed view");
                     _ui.getViewerMenu().getViewSwitchViewsItem().setIcon(
                         new ImageIcon(Toolkit.getDefaultToolkit().getImage(
@@ -450,19 +456,19 @@ public class MainWindowTool {
     private void adjustFrameToDetailedView()
     {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        int x = (dim.width / 2) - (DetailedView.DETAILED_VIEW_DEFAULT_WIDTH / 2);
-        int y = (dim.height / 2) - (DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT / 2);
+        int x = (dim.width / 2) - (DetailedViewPanel.DETAILED_VIEW_DEFAULT_WIDTH / 2);
+        int y = (dim.height / 2) - (DetailedViewPanel.DETAILED_VIEW_DEFAULT_HEIGHT / 2);
 
-        if (_ui.getFrame().getWidth() < DetailedView.DETAILED_VIEW_DEFAULT_WIDTH
-            && _ui.getFrame().getHeight() < DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT)
+        if (_ui.getFrame().getWidth() < DetailedViewPanel.DETAILED_VIEW_DEFAULT_WIDTH
+            && _ui.getFrame().getHeight() < DetailedViewPanel.DETAILED_VIEW_DEFAULT_HEIGHT)
         {
             _ui.getFrame().setBounds(
                 x,
                 y,
-                DetailedView.DETAILED_VIEW_DEFAULT_WIDTH,
-                DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT);
+                DetailedViewPanel.DETAILED_VIEW_DEFAULT_WIDTH,
+                DetailedViewPanel.DETAILED_VIEW_DEFAULT_HEIGHT);
         }
-        else if (_ui.getFrame().getWidth() < DetailedView.DETAILED_VIEW_DEFAULT_WIDTH)
+        else if (_ui.getFrame().getWidth() < DetailedViewPanel.DETAILED_VIEW_DEFAULT_WIDTH)
         {
             int displayHeightHalf = (dim.height / 2);
             int frameHeightHalf = (_ui.getFrame().getHeight() / 2);
@@ -471,10 +477,10 @@ public class MainWindowTool {
             _ui.getFrame().setBounds(
                 x,
                 y,
-                DetailedView.DETAILED_VIEW_DEFAULT_WIDTH,
+                DetailedViewPanel.DETAILED_VIEW_DEFAULT_WIDTH,
                 _ui.getFrame().getHeight());
         }
-        else if (_ui.getFrame().getHeight() < DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT)
+        else if (_ui.getFrame().getHeight() < DetailedViewPanel.DETAILED_VIEW_DEFAULT_HEIGHT)
         {
             x = (dim.width / 2) - (_ui.getFrame().getWidth() / 2);
 
@@ -482,7 +488,7 @@ public class MainWindowTool {
                 x,
                 y,
                 _ui.getFrame().getWidth(),
-                DetailedView.DETAILED_VIEW_DEFAULT_HEIGHT);
+                DetailedViewPanel.DETAILED_VIEW_DEFAULT_HEIGHT);
         }
     }
 

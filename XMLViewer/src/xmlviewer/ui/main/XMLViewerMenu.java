@@ -32,6 +32,7 @@ public class XMLViewerMenu {
     private final JMenuItem _viewExpandAll;
     private final JCheckBoxMenuItem _viewApplyFilter;
     private final JCheckBoxMenuItem _viewShowCompact;
+    private final JMenuItem _viewFind;
 
     public XMLViewerMenu(boolean saveWindowPos, boolean saveTreeState)
     {
@@ -82,6 +83,11 @@ public class XMLViewerMenu {
         _viewShowCompact.setSelected(false);
         _viewShowCompact.setEnabled(false);
 
+        _viewFind = new JMenuItem("Find...");
+        _viewFind.setName("find");
+        _viewFind.setSelected(false);
+        _viewFind.setEnabled(false);
+
         setupMenuBar();
     }
 
@@ -89,15 +95,16 @@ public class XMLViewerMenu {
     {
         _file.setMnemonic(KeyEvent.VK_F);
 
-        _fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.ALT_MASK));
-        _fileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+        _fileOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+        _fileExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
         _settingsSaveWindowLocation.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, ActionEvent.ALT_MASK));
         _settingsSaveTreeState.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
-        _viewSwitchViews.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
-        _viewCollapseAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
-        _viewExpandAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+        _viewSwitchViews.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        _viewCollapseAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+        _viewExpandAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
         _viewApplyFilter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.ALT_MASK));
         _viewShowCompact.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK));
+        _viewFind.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
 
         _file.add(_fileOpen);
         _file.add(new JSeparator());
@@ -118,6 +125,7 @@ public class XMLViewerMenu {
         _view.add(_viewCollapseAll);
         _view.add(_viewExpandAll);
         _view.add(new JSeparator());
+        _view.add(_viewFind);
         _view.add(_viewApplyFilter);
         _view.add(_viewShowCompact);
 
@@ -176,6 +184,11 @@ public class XMLViewerMenu {
     public JMenuItem getViewExpandAllItem()
     {
         return _viewExpandAll;
+    }
+
+    public JMenuItem getViewFindItem()
+    {
+        return _viewFind;
     }
 
     public JCheckBoxMenuItem getViewApplyFilterItem()

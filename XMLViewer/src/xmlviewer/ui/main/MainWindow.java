@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 import xmlviewer.tree.XMLTreeCellRenderer;
 import xmlviewer.tree.XMLTreeModel;
 import xmlviewer.tree.util.XMLTreeUtil;
-import xmlviewer.ui.detail.DetailedView;
+import xmlviewer.ui.detail.DetailedViewPanel;
 
 
 /**
@@ -47,6 +47,8 @@ public class MainWindow {
     public static final String ICON_COLLAPSE_PATH = "/images/collapse_icon.png";
 
     public static final String ICON_EXPAND_PATH = "/images/expand_icon.png";
+
+    public static final String ICON_FIND_ELEMENT_PATH = "/images/find_element_icon.png";
 
     public MainWindow(int x, int y, int width, int height, boolean saveWindowPos, boolean saveTreeState)
     {
@@ -125,7 +127,7 @@ public class MainWindow {
         _framePanel.setViewportView(_tree);
     }
 
-    public void initializeAndDisplayDetailedView(DetailedView detail)
+    public void initializeAndDisplayDetailedView(DetailedViewPanel detail)
     {
         _framePanel.setViewportView(detail);
     }

@@ -18,7 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import xmlviewer.tree.util.DetailedViewUtil;
 import xmlviewer.ui.CustomCheckBox;
-import xmlviewer.ui.detail.FilterChildren;
+import xmlviewer.ui.detail.FilterChildrenWindow;
 
 
 /**
@@ -27,7 +27,7 @@ import xmlviewer.ui.detail.FilterChildren;
  */
 public class FilterChildrenTool
 {
-    private FilterChildren _ui;
+    private FilterChildrenWindow _ui;
     private Node _parentNode;
     private int _parentNodeIndex;
     private Map<CustomCheckBox, List<CustomCheckBox>> _childrenAttributesMap;
@@ -38,7 +38,7 @@ public class FilterChildrenTool
         _parentNode = parentNode;
         _parentNodeIndex = parentNodeIndex;
         _childrenAttributesMap = new HashMap<CustomCheckBox, List<CustomCheckBox>>();
-        _ui = new FilterChildren(owner);
+        _ui = new FilterChildrenWindow(owner);
         initializeUI();
         setupListeners();
     }
