@@ -48,10 +48,10 @@ public class FindElementWindow
         _frame.setIconImage(Toolkit.getDefaultToolkit().getImage(
             (getClass().getResource(MainWindow.ICON_FIND_ELEMENT_PATH))));
 
+        int parentX = parent.getX();
         int parentY = parent.getY();
-        int parentWidth = parent.getWidth();
 
-        _frame.setBounds((parentWidth - WIDTH - OFFSET_X), (parentY + OFFSET_Y), WIDTH, HEIGHT);
+        _frame.setBounds((parentX + WIDTH), (parentY + OFFSET_Y), WIDTH, HEIGHT);
 
         _contentPane = new JPanel();
         _contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
