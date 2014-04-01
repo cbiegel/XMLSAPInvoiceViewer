@@ -27,7 +27,6 @@ public class FindElementWindow
 
     private final int HEIGHT = 170;
     private final int WIDTH = 460;
-    private final int OFFSET_X = 200;
     private final int OFFSET_Y = 100;
     private JPanel checkBoxPanel;
     private JCheckBox _checkBoxCaseSensitive;
